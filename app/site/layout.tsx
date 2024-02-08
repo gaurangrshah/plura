@@ -1,7 +1,6 @@
+import Navigation from '@/components/site/navigation';
 import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
-
-import Navigation from '@/components/site/navigation';
 
 export default function SiteLayout({
   children,
