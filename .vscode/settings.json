@@ -1,5 +1,4 @@
 {
-  "cSpell.words": [
-    "plura"
-  ]
+  "cSpell.words": ["plura"],
+  "importSorter.generalConfiguration.sortOnBeforeSave": true
 }
