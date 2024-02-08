@@ -1,8 +1,9 @@
+import Image from 'next/image';
+import Link from 'next/link';
+
 import { ModeToggle } from '@/components/global/mode-toggle';
 import { UserButton } from '@clerk/nextjs';
 import { User } from '@clerk/nextjs/server';
-import Image from 'next/image';
-import Link from 'next/link';
 
 type NavigationProps = {
   user?: null | User;
@@ -10,7 +11,7 @@ type NavigationProps = {
 
 export default function Navigation({ user }: NavigationProps) {
   return (
-    <div className='relative flex items-center justify-between p-4'>
+    <div className='fixed left-0 right-0 top-0 z-10 flex items-center justify-between p-4'>
       <aside className='flex items-center gap-2'>
         <Image
           src='./assets/plura-logo.svg'
