@@ -36,7 +36,7 @@ export async function Sidebar({ id, type }: SidebarProps) {
     type === 'agency'
       ? user.Agency.SidebarOption || []
       : user?.Agency.SubAccount.find((subacct) => subacct.id === id)
-          ?.SidebarOption || [];
+        ?.SidebarOption || [];
 
   const subaccounts = user.Agency.SubAccount.filter((subacct) =>
     user.Permissions.find(
