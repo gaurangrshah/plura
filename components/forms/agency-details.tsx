@@ -128,16 +128,16 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
           },
         };
 
-        const customerResponse = await fetch('/api/stripe/create-customer', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(bodyData),
-        });
-        const customerData: { customerId: string } =
-          await customerResponse.json();
-        custId = customerData.customerId;
+        // const customerResponse = await fetch('/api/stripe/create-customer', {
+        //   method: 'POST',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //   },
+        //   body: JSON.stringify(bodyData),
+        // });
+        // const customerData: { customerId: string } =
+        //   await customerResponse.json();
+        // custId = customerData.customerId;
       }
 
       newUserData = await initUser({ role: 'AGENCY_OWNER' });
@@ -176,7 +176,7 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
       console.log(error);
       toast({
         variant: 'destructive',
-        title: 'Oppse!',
+        title: 'Oppsie!',
         description: 'could not create your agency',
       });
     }
