@@ -229,14 +229,15 @@ export const initUser = async (newUser: Partial<User>) => {
   const user = await currentUser();
   if (!user) return;
 
-  const updateUserData = await db.user.upsert({
-    where: { email: user.emailAddresses[0].emailAddress },
+  const userData = await db.user.upsert({
+    where: {
+      email: user.emailAddresses[0].emailAddress,
+    },
     update: newUser,
     create: {
       id: user.id,
       avatarUrl: user.imageUrl,
       email: user.emailAddresses[0].emailAddress,
-      ...newUser,
       name: `${user.firstName} ${user.lastName}`,
       role: newUser.role || 'SUBACCOUNT_USER',
     },
@@ -247,4 +248,6 @@ export const initUser = async (newUser: Partial<User>) => {
       role: newUser.role || 'SUBACCOUNT_USER',
     },
   });
+
+  return userData;
 };
