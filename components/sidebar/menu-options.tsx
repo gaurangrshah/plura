@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronsUpDown, Compass, PlusCircleIcon } from 'lucide-react';
+import { ChevronsUpDown, Compass, Menu, PlusCircleIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
@@ -69,7 +69,9 @@ export function MenuOptions({
         asChild
         className='absolute  left-4 top-4 z-[100] flex md:hidden'
       >
-        <Button variant='outline' size='icon' className=''></Button>
+        <Button variant='outline' size='icon' className=''>
+          <Menu />
+        </Button>
       </SheetTrigger>
       <SheetContent
         showX={!defaultOpen}
