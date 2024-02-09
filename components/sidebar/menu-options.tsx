@@ -7,12 +7,16 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { icons } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { useModal } from '@/providers/modal-provider';
 import {
+  Agency,
   AgencySidebarOption,
   SubAccount,
   SubAccountSidebarOption,
 } from '@prisma/client';
 
+import { SubAccountDetails } from '../forms/subaccount-details';
+import CustomModal from '../global/custom-modal';
 import { AspectRatio } from '../ui/aspect-ratio';
 import { Button } from '../ui/button';
 import {
@@ -47,7 +51,7 @@ export function MenuOptions({
   defaultOpen,
 }: MenuOptionsProps) {
   const [isMounted, setIsMounted] = useState(false);
-
+  const { setOpen } = useModal();
   const openState = useMemo(
     () => (defaultOpen ? { open: true } : {}),
     [defaultOpen]
@@ -60,11 +64,7 @@ export function MenuOptions({
   if (!isMounted) return;
 
   return (
-    <Sheet
-      modal={false}
-      open={true}
-      // {...openState}
-    >
+    <Sheet modal={false} {...openState}>
       <SheetTrigger
         asChild
         className='absolute  left-4 top-4 z-[100] flex md:hidden'
@@ -222,18 +222,18 @@ export function MenuOptions({
                     <Button
                       className='flex w-full gap-2'
                       onClick={() => {
-                        // setOpen(
-                        //   <CustomModal
-                        //     title='Create A Subaccount'
-                        //     subheading='You can switch between your agency account and the subaccount from the sidebar'
-                        //   >
-                        //     <SubAccountDetails
-                        //       agencyDetails={user?.Agency as Agency}
-                        //       userId={user?.id as string}
-                        //       userName={user?.name}
-                        //     />
-                        //   </CustomModal>
-                        // );
+                        setOpen(
+                          <CustomModal
+                            title='Create A Subaccount'
+                            subheading='You can switch between your agency account and the subaccount from the sidebar'
+                          >
+                            <SubAccountDetails
+                              agencyDetails={user?.Agency as Agency}
+                              userId={user?.id as string}
+                              userName={user?.name}
+                            />
+                          </CustomModal>
+                        );
                       }}
                     >
                       <PlusCircleIcon size={15} />

@@ -59,13 +59,12 @@ export async function Sidebar({ id, type }: SidebarProps) {
 
       {/* Mobile Nav */}
       <MenuOptions
-        // defaultOpen={true}
+        details={details}
         id={id}
         sidebarLogo={sideBarLogo}
         sidebarOpt={sidebarOpt}
         subAccounts={subaccounts}
         user={user}
-        details={{}}
       />
     </>
   );
