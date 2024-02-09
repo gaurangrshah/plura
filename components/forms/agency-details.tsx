@@ -1,10 +1,17 @@
 'use client';
 
+import {
+  useEffect,
+  useState,
+} from 'react';
+
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { v4 } from 'uuid';
+
+import { Agency } from '@prisma/client';
+
 import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
 import {
   AlertDialog,
@@ -16,6 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+
 import {
   deleteAgency,
   initUser,
@@ -23,8 +31,6 @@ import {
   updateAgencyDetails,
   upsertAgency,
 } from '@/lib/queries';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Agency } from '@prisma/client';
 import { NumberInput } from '@tremor/react';
 
 import FileUpload from '../global/file-upload';
@@ -50,6 +56,7 @@ import {
 import { Input } from '../ui/input';
 import { Switch } from '../ui/switch';
 import { useToast } from '../ui/use-toast';
+import { v4 } from 'uuid';
 
 type AgencyDetailProps = {
   data?: Partial<Agency>;
@@ -207,7 +214,7 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
 
   return (
     <AlertDialog>
-      <Card className='w-full'>
+      <Card className='w-full space-y-6'>
         <CardHeader>
           <CardTitle>Agency Information</CardTitle>
           <CardDescription>
@@ -219,7 +226,7 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
-              className='space-y-4'
+              className='space-y-6'
             >
               <FormField
                 disabled={isLoading}
@@ -290,11 +297,11 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
                 name='whiteLabel'
                 render={({ field }) => {
                   return (
-                    <FormItem className='flex flex-row items-center justify-between gap-4 rounded-lg border p-4'>
+                    <FormItem className='flex flex-row items-center justify-between gap-4 rounded-lg border p-4 bg-gray-800 text-gray-300'>
                       <div>
-                        <FormLabel>Whitelabel Agency</FormLabel>
-                        <FormDescription>
-                          Turning on whilelabel mode will show your agency logo
+                        <FormLabel>White-label Agency</FormLabel>
+                        <FormDescription className='text-white'>
+                          Turning on white-label mode will show your agency logo
                           to all sub accounts by default. You can overwrite this
                           functionality through sub account settings.
                         </FormDescription>

@@ -1,16 +1,28 @@
 'use client';
-import { Bell } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { NotificationWithUser } from '@/lib/types';
-import { cn } from '@/lib/utils';
 import { UserButton } from '@clerk/nextjs';
-import { Role, SubAccount } from '@prisma/client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Role } from '@prisma/client';
+
+import { Bell } from 'lucide-react';
+
+import type { NotificationWithUser } from '@/lib/types';
+import { cn } from '@/lib/utils';
+
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '../ui/avatar';
 import { Card } from '../ui/card';
 import {
-    Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
 } from '../ui/sheet';
 import { Switch } from '../ui/switch';
 import { ModeToggle } from './mode-toggle';
