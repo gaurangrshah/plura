@@ -95,7 +95,8 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
   });
   const isLoading = form.formState.isSubmitting;
 
-  useEffect(() => data && form.reset(data), [data, form]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => data && form.reset(data), [data]);
 
   /* ------------------------------------------------------------------------ */
   /*                                  Handlers                                */
