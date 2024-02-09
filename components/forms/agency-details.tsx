@@ -56,7 +56,7 @@ type AgencyDetailProps = {
 };
 
 const FormSchema = z.object({
-  name: z.string().min(2, { message: 'Agency name must be atleast 2 chars.' }),
+  name: z.string().min(2, { message: 'Agency name must be at least 2 chars.' }),
   companyEmail: z.string().min(1),
   companyPhone: z.string().min(1),
   whiteLabel: z.boolean(),
@@ -232,7 +232,7 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
                       <FileUpload
                         apiEndpoint='agencyLogo'
                         onChange={field.onChange}
-                        value={field.value}
+                        value={field.value || ''}
                       />
                     </FormControl>
                     <FormMessage />
@@ -419,7 +419,7 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
                 <div>Danger Zone</div>
               </div>
               <div className='text-muted-foreground'>
-                Deleting your agency cannpt be undone. This will also delete all
+                Deleting your agency cannot be undone. This will also delete all
                 sub accounts and all data related to your sub accounts. Sub
                 accounts will no longer have access to funnels, contacts etc.
               </div>
