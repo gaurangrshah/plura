@@ -452,11 +452,13 @@ export const sendInvitation = async (
   email: string,
   agencyId: string
 ) => {
-  const resposne = await db.invitation.create({
+  const response = await db.invitation.create({
     data: { email, agencyId, role },
   });
 
   try {
+    // @FIXME: this throws an error
+    // Invitations are only supported on instances that accept email addresses.
     const invitation = await clerkClient.invitations.createInvitation({
       emailAddress: email,
       redirectUrl: process.env.NEXT_PUBLIC_URL,
@@ -470,5 +472,5 @@ export const sendInvitation = async (
     throw error;
   }
 
-  return resposne;
+  return response;
 };
