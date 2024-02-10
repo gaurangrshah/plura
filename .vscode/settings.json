@@ -10,7 +10,7 @@
     "^@clerk/",
     "^@prisma/",
     "^lucide-react",
-    ["^zod", "^@hookform/", "^react-hook-form"],
+    ["^uuid", "^zod", "^@hookform/", "^react-hook-form"],
     {},
     "^@/providers/",
     ["^@/components/", "^@/components/ui/"],
