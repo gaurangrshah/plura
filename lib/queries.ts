@@ -2,18 +2,9 @@
 
 import { redirect } from 'next/navigation';
 
-import {
-  clerkClient,
-  currentUser,
-} from '@clerk/nextjs';
+import { clerkClient, currentUser } from '@clerk/nextjs';
 
-import {
-  Agency,
-  Plan,
-  Role,
-  SubAccount,
-  User,
-} from '@prisma/client';
+import { Agency, Plan, Role, SubAccount, User } from '@prisma/client';
 
 import { v4 } from 'uuid';
 
@@ -478,13 +469,13 @@ export const sendInvitation = async (
 };
 
 export const getMedia = async (subaccountId: string) => {
-  const mediafiles = await db.subAccount.findUnique({
+  const mediaFiles = await db.subAccount.findUnique({
     where: {
       id: subaccountId,
     },
     include: { Media: true },
   });
-  return mediafiles;
+  return mediaFiles;
 };
 
 export const createMedia = async (

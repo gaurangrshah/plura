@@ -1,6 +1,9 @@
-import { FileIcon, X } from 'lucide-react';
 import Image from 'next/image';
-import React from 'react';
+
+import {
+  FileIcon,
+  X,
+} from 'lucide-react';
 
 import { UploadDropzone } from '@/lib/uploadthing';
 
@@ -42,7 +45,7 @@ const FileUpload = ({ apiEndpoint, onChange, value }: Props) => {
         )}
         <Button onClick={() => onChange('')} variant='ghost' type='button'>
           <X className='h-4 w-4' />
-          Remove Logo
+          Remove Media
         </Button>
       </div>
     );
