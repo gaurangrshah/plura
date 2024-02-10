@@ -170,7 +170,7 @@ export function UserDetails({
     if (response) {
       toast({
         title: 'Success',
-        description: 'The request was successfull',
+        description: 'The request was successful',
       })
       if (subAccountPermissions) {
         subAccountPermissions.Permissions.find((perm) => {
@@ -217,7 +217,7 @@ export function UserDetails({
       } else {
         toast({
           variant: 'destructive',
-          title: 'Oppse!',
+          title: 'Oopsie!',
           description: 'Could not update user information',
         })
       }
@@ -309,7 +309,7 @@ export function UserDetails({
                         value === 'SUBACCOUNT_GUEST'
                       ) {
                         setRoleState(
-                          'You need to have subaccounts to assign Subaccount access to team members.'
+                          'You need to have sub-accounts to assign Sub-account access to team members.'
                         )
                       } else {
                         setRoleState('')
@@ -324,7 +324,7 @@ export function UserDetails({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="AGENCY_ADMING">
+                      <SelectItem value="AGENCY_ADMIN">
                         Agency Admin
                       </SelectItem>
                       {(data?.user?.role === 'AGENCY_OWNER' ||
@@ -379,11 +379,11 @@ export function UserDetails({
                           disabled={loadingPermissions}
                           checked={subAccountPermissionsDetails?.access}
                           onCheckedChange={(permission) => {
-                            // onChangePermission(
-                            //   subAccount.id,
-                            //   permission,
-                            //   subAccountPermissionsDetails?.id
-                            // )
+                            onChangePermission(
+                              subAccount.id,
+                              permission,
+                              subAccountPermissionsDetails?.id
+                            )
                           }}
                         />
                       </div>
