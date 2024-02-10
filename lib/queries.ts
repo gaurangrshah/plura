@@ -2,17 +2,9 @@
 
 import { redirect } from 'next/navigation';
 
-import {
-  clerkClient,
-  currentUser,
-} from '@clerk/nextjs';
+import { clerkClient, currentUser } from '@clerk/nextjs';
 
-import {
-  Agency,
-  Plan,
-  SubAccount,
-  User,
-} from '@prisma/client';
+import { Agency, Plan, SubAccount, User } from '@prisma/client';
 
 import db from './db';
 import { v4 } from 'uuid';
@@ -288,7 +280,7 @@ export const upsertSubAccount = async (subAccount: SubAccount) => {
     },
   });
 
-  if (!agencyOwner) return console.log('🔴Erorr could not create subaccount');
+  if (!agencyOwner) return console.log('🔴Error could not create subaccount');
   const permissionId = v4();
   const response = await db.subAccount.upsert({
     where: { id: subAccount.id },
@@ -403,6 +395,24 @@ export const changeUserPermissions = async (
     });
     return response;
   } catch (error) {
-    console.log('🔴Could not change persmission', error);
+    console.log('🔴Could not change permission', error);
   }
+};
+
+export const getSubaccountDetails = async (subaccountId: string) => {
+  const response = await db.subAccount.findUnique({
+    where: {
+      id: subaccountId,
+    },
+  });
+  return response;
+};
+
+export const deleteSubAccount = async (subaccountId: string) => {
+  const response = await db.subAccount.delete({
+    where: {
+      id: subaccountId,
+    },
+  });
+  return response;
 };
