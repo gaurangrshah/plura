@@ -2,9 +2,18 @@
 
 import { redirect } from 'next/navigation';
 
-import { clerkClient, currentUser } from '@clerk/nextjs';
+import {
+  clerkClient,
+  currentUser,
+} from '@clerk/nextjs';
 
-import { Agency, Plan, SubAccount, User } from '@prisma/client';
+import {
+  Agency,
+  Plan,
+  Role,
+  SubAccount,
+  User,
+} from '@prisma/client';
 
 import db from './db';
 import { v4 } from 'uuid';
@@ -415,4 +424,51 @@ export const deleteSubAccount = async (subaccountId: string) => {
     },
   });
   return response;
+};
+
+export const deleteUser = async (userId: string) => {
+  await clerkClient.users.updateUserMetadata(userId, {
+    privateMetadata: {
+      role: undefined,
+    },
+  });
+  const deletedUser = await db.user.delete({ where: { id: userId } });
+
+  return deletedUser;
+};
+
+export const getUser = async (id: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return user;
+};
+
+export const sendInvitation = async (
+  role: Role,
+  email: string,
+  agencyId: string
+) => {
+  const resposne = await db.invitation.create({
+    data: { email, agencyId, role },
+  });
+
+  try {
+    const invitation = await clerkClient.invitations.createInvitation({
+      emailAddress: email,
+      redirectUrl: process.env.NEXT_PUBLIC_URL,
+      publicMetadata: {
+        throughInvitation: true,
+        role,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+
+  return resposne;
 };
