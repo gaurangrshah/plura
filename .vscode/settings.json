@@ -11,6 +11,7 @@
     "^@prisma/",
     "^lucide-react",
     ["^uuid", "^zod", "^@hookform/", "^react-hook-form"],
+    "^react-beautiful-dnd",
     {},
     "^@/providers/",
     ["^@/components/", "^@/components/ui/"],
