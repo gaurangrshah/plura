@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -42,10 +42,10 @@ interface CreatePipelineFormProps {
   subAccountId: string
 }
 
-export function CreatePipelineForm({
+export const CreatePipelineForm: React.FC<CreatePipelineFormProps> = ({
   defaultData,
   subAccountId,
-}: CreatePipelineFormProps) {
+}) => {
   const { data, isOpen, setOpen, setClose } = useModal()
   const router = useRouter()
   const form = useForm<z.infer<typeof CreatePipelineFormSchema>>({

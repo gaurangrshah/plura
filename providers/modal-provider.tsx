@@ -1,18 +1,10 @@
 'use client';
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-import {
-  Agency,
-  User,
-} from '@prisma/client';
+import { Agency, User } from '@prisma/client';
 
-import { TicketDetails } from '@/lib/types';
+import Database from '../components/icons/database';
 
 interface ModalProviderProps {
   children: React.ReactNode;
@@ -21,7 +13,6 @@ interface ModalProviderProps {
 export type ModalData = {
   user?: User;
   agency?: Agency;
-  ticket?: TicketDetails[0];
 };
 
 type ModalContextType = {
@@ -34,8 +25,8 @@ type ModalContextType = {
 export const ModalContext = createContext<ModalContextType>({
   data: {},
   isOpen: false,
-  setOpen: () => { },
-  setClose: () => { },
+  setOpen: () => {},
+  setClose: () => {},
 });
 
 export function ModalProvider({ children }: ModalProviderProps) {
