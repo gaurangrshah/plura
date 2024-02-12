@@ -67,7 +67,7 @@ export function UploadMediaForm({ subaccountId, onClose }: Props) {
       form.reset()
       onClose?.()
     } catch (error) {
-      console.log(error)
+      console.log("error", error);
       toast({
         variant: 'destructive',
         title: 'Failed',

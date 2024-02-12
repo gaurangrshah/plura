@@ -29,6 +29,6 @@ export default async function Pipelines({ params }: Props) {
       `/subaccount/${params.subaccountId}/pipelines/${response.id}`
     );
   } catch (error) {
-    console.log(error);
+    console.log("error", error);
   }
 }

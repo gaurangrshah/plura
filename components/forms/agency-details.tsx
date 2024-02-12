@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 
 import { Agency } from '@prisma/client';
 
+import { v4 } from 'uuid';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -56,7 +57,6 @@ import {
 import { Input } from '../ui/input';
 import { Switch } from '../ui/switch';
 import { useToast } from '../ui/use-toast';
-import { v4 } from 'uuid';
 
 type AgencyDetailProps = {
   data?: Partial<Agency>;
@@ -181,7 +181,7 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.log("error", error);
       toast({
         variant: 'destructive',
         title: 'Oppsie!',
@@ -202,7 +202,7 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
       });
       router.refresh();
     } catch (error) {
-      console.log(error);
+      console.log("error", error);
       toast({
         variant: 'destructive',
         title: 'Oppse!',

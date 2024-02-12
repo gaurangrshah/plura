@@ -69,7 +69,7 @@ export function SendInvitation({ agencyId }: SendInvitationProps) {
         description: 'Created and sent invitation',
       })
     } catch (error) {
-      console.log(error)
+      console.log("error", error);
       toast({
         variant: 'destructive',
         title: 'Oppse!',

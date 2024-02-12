@@ -134,7 +134,7 @@ export function PipelineTicket({
         title: 'Oppse!',
         description: 'Could not delete the ticket.',
       })
-      console.log(error)
+      console.log("error", error);
     }
   }
   return (

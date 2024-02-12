@@ -237,7 +237,7 @@ export const upsertAgency = async (agency: Agency, price?: Plan) => {
     });
     return agencyDetails;
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 };
 
@@ -284,7 +284,7 @@ export const getNotificationAndUser = async (agencyId: string) => {
     });
     return response;
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
   }
 };
 
@@ -478,7 +478,7 @@ export const sendInvitation = async (
       },
     });
   } catch (error) {
-    console.log(error);
+    console.log('error', error);
     throw error;
   }
 

@@ -132,7 +132,7 @@ export function PipelineLane({
       });
       router.refresh();
     } catch (error) {
-      console.log(error);
+      console.log("error", error);
     }
   };
 
