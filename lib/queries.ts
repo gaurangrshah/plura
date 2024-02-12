@@ -2,10 +2,7 @@
 
 import { redirect } from 'next/navigation';
 
-import {
-  clerkClient,
-  currentUser,
-} from '@clerk/nextjs';
+import { clerkClient, currentUser } from '@clerk/nextjs';
 
 import {
   Agency,
@@ -23,10 +20,7 @@ import { v4 } from 'uuid';
 import { z } from 'zod';
 
 import db from './db';
-import type {
-  CreateFunnelFormSchema,
-  CreateMediaType,
-} from './types';
+import type { CreateFunnelFormSchema, CreateMediaType } from './types';
 
 export const getAuthUserDetails = async () => {
   const user = await currentUser();
@@ -779,5 +773,16 @@ export const getTagsForSubaccount = async (subaccountId: string) => {
 
 export const deleteTag = async (tagId: string) => {
   const response = await db.tag.delete({ where: { id: tagId } });
+  return response;
+};
+
+export const upsertContact = async (
+  contact: Prisma.ContactUncheckedCreateInput
+) => {
+  const response = await db.contact.upsert({
+    where: { id: contact.id || v4() },
+    update: contact,
+    create: contact,
+  });
   return response;
 };
