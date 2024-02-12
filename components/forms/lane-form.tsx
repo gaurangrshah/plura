@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import { Pipeline } from '@prisma/client';
+import { Lane } from '@prisma/client';
 
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,30 +27,31 @@ import {
 } from '@/components/ui/form';
 
 import {
+  getPipelineDetails,
   saveActivityLogsNotification,
-  upsertPipeline,
+  upsertLane,
 } from '@/lib/queries';
-import { CreatePipelineFormSchema } from '@/lib/types';
+import { LaneFormSchema } from '@/lib/types';
 
 import Loading from '../global/loading';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { toast } from '../ui/use-toast';
 
-interface CreatePipelineFormProps {
-  defaultData?: Pipeline
-  subAccountId: string
+interface CreateLaneFormProps {
+  defaultData?: Lane
+  pipelineId: string
 }
 
-export function CreatePipelineForm({
+export function LaneForm({
   defaultData,
-  subAccountId,
-}: CreatePipelineFormProps) {
-  const { data, isOpen, setOpen, setClose } = useModal()
+  pipelineId,
+}: CreateLaneFormProps) {
+  const { setClose } = useModal()
   const router = useRouter()
-  const form = useForm<z.infer<typeof CreatePipelineFormSchema>>({
+  const form = useForm<z.infer<typeof LaneFormSchema>>({
     mode: 'onChange',
-    resolver: zodResolver(CreatePipelineFormSchema),
+    resolver: zodResolver(LaneFormSchema),
     defaultValues: {
       name: defaultData?.name || '',
     },
@@ -67,40 +68,44 @@ export function CreatePipelineForm({
 
   const isLoading = form.formState.isLoading
 
-  const onSubmit = async (values: z.infer<typeof CreatePipelineFormSchema>) => {
-    if (!subAccountId) return
+  const onSubmit = async (values: z.infer<typeof LaneFormSchema>) => {
+    if (!pipelineId) return
     try {
-      const response = await upsertPipeline({
+      const response = await upsertLane({
         ...values,
         id: defaultData?.id,
-        subAccountId: subAccountId,
+        pipelineId: pipelineId,
+        order: defaultData?.order,
       })
+
+      const d = await getPipelineDetails(pipelineId)
+      if (!d) return
 
       await saveActivityLogsNotification({
         agencyId: undefined,
-        description: `Updates a pipeline | ${response?.name}`,
-        subaccountId: subAccountId,
+        description: `Updated a lane | ${response?.name}`,
+        subaccountId: d.subAccountId,
       })
 
       toast({
         title: 'Success',
         description: 'Saved pipeline details',
       })
+
       router.refresh()
     } catch (error) {
       toast({
         variant: 'destructive',
-        title: 'Oopsie!',
+        title: 'Oppse!',
         description: 'Could not save pipeline details',
       })
     }
-
     setClose()
   }
   return (
     <Card className="w-full ">
       <CardHeader>
-        <CardTitle>Pipeline Details</CardTitle>
+        <CardTitle>Lane Details</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -114,10 +119,10 @@ export function CreatePipelineForm({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pipeline Name</FormLabel>
+                  <FormLabel>Lane Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Name"
+                      placeholder="Lane Name"
                       {...field}
                     />
                   </FormControl>
