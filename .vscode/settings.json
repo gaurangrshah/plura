@@ -14,6 +14,7 @@
     "^@clerk/",
     "^@prisma/",
     "^lucide-react",
+    "^date-fns/"
     ["^uuid", "^zod", "^@hookform/", "^react-hook-form"],
     ["^cmdk", "^@hello-pangea/"],
     {},
