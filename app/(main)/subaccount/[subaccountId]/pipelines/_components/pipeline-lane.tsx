@@ -18,7 +18,7 @@ import {
 import {
   Draggable,
   Droppable,
-} from 'react-beautiful-dnd';
+} from '@hello-pangea/dnd';
 
 import { useModal } from '@/providers/modal-provider';
 

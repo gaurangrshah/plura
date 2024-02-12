@@ -13,8 +13,6 @@ import {
   User2,
 } from 'lucide-react';
 
-import { Draggable } from 'react-beautiful-dnd';
-
 import { useModal } from '@/providers/modal-provider';
 
 import { TicketForm } from '@/components/forms/ticket-form';
@@ -64,6 +62,7 @@ import {
   saveActivityLogsNotification,
 } from '@/lib/queries';
 import { TicketWithTags } from '@/lib/types';
+import { Draggable } from '@hello-pangea/dnd';
 
 type PipelineTicketProps = {
   setAllTickets: Dispatch<SetStateAction<TicketWithTags>>

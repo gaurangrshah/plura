@@ -20,7 +20,7 @@ import {
   DragDropContext,
   Droppable,
   DropResult,
-} from 'react-beautiful-dnd';
+} from '@hello-pangea/dnd';
 
 import { useModal } from '@/providers/modal-provider';
 
