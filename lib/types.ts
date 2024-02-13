@@ -11,6 +11,8 @@ import type {
 
 import { z } from 'zod';
 
+import Stripe from 'stripe';
+
 import db from '@/lib/db';
 
 import {
