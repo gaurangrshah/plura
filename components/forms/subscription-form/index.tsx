@@ -25,7 +25,7 @@ export function SubscriptionForm({ selectedPriceId }: SubscriptionFormProps) {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     if (!selectedPriceId) {
-      setPriceError('You need to select a plan to subscribe.')
+      setPriceError('Please select a subscription plan.')
       return
     }
     setPriceError('')
@@ -33,6 +33,7 @@ export function SubscriptionForm({ selectedPriceId }: SubscriptionFormProps) {
     if (!stripeHook || !elements) return
 
     try {
+      // confirm payment triggers the webhook to create a subscription
       const { error } = await stripeHook.confirmPayment({
         elements,
         confirmParams: {
@@ -43,7 +44,7 @@ export function SubscriptionForm({ selectedPriceId }: SubscriptionFormProps) {
         throw new Error()
       }
       toast({
-        title: 'Payment successfull',
+        title: 'Payment successful',
         description: 'Your payment has been successfully processed. ',
       })
     } catch (error) {
@@ -52,7 +53,7 @@ export function SubscriptionForm({ selectedPriceId }: SubscriptionFormProps) {
         variant: 'destructive',
         title: 'Payment failed',
         description:
-          'We couldnt process your payment. Please try a different card',
+          'We couldn\'t process your payment. Please try a different card',
       })
     }
   }

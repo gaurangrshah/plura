@@ -23,7 +23,6 @@ export async function POST(req: Request) {
     where: { customerId },
     include: { Subscription: true },
   });
-  console.log('🚀 | subscriptionExists:', subscriptionExists);
 
   try {
     if (
