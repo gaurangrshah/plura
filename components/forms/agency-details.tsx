@@ -111,8 +111,8 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
 
   const handleSubmit = async (values: z.infer<typeof FormSchema>) => {
     try {
-      let newUserData;
-      let custId; // @FIXME: akyXMZuz update agencny model: customerId handling
+      let newUserData
+      let custId
       if (!data?.id) {
         const bodyData = {
           email: values.companyEmail,
@@ -134,61 +134,57 @@ export function AgencyDetails({ data }: AgencyDetailProps) {
             postal_code: values.zipCode,
             state: values.zipCode,
           },
-        };
+        }
 
-        // const customerResponse = await fetch('/api/stripe/create-customer', {
-        //   method: 'POST',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //   },
-        //   body: JSON.stringify(bodyData),
-        // });
-        // const customerData: { customerId: string } =
-        //   await customerResponse.json();
-        // custId = customerData.customerId;
+        const customerResponse = await fetch('/api/stripe/create-customer', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(bodyData),
+        })
+        const customerData: { customerId: string } =
+          await customerResponse.json()
+        custId = customerData.customerId
       }
 
-      newUserData = await initUser({ role: 'AGENCY_OWNER' });
-      // if (!data?.customerId && custId) { // @FIXME: akyXMZuz
-      if (!data?.id) {
-        const response = await upsertAgency({
-          id: data?.id ? data.id : v4(),
-          // customerId: data?.customerId || custId || '', // #FIXME:  akyXMZuz
-          address: values.address,
-          agencyLogo: values.agencyLogo,
-          city: values.city,
-          companyPhone: values.companyPhone,
-          country: values.country,
-          name: values.name,
-          state: values.state,
-          whiteLabel: values.whiteLabel,
-          zipCode: values.zipCode,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          companyEmail: values.companyEmail,
-          connectAccountId: '',
-          goal: 5,
-        });
+      newUserData = await initUser({ role: 'AGENCY_OWNER' })
+      if (!data?.customerId && !custId) return
 
-        toast({
-          title: 'Created Agency',
-        });
-
-        if (data?.id) return router.refresh();
-
-        if (response) {
-          return router.refresh();
-        }
+      const response = await upsertAgency({
+        id: data?.id ? data.id : v4(),
+        customerId: data?.customerId || custId || '',
+        address: values.address,
+        agencyLogo: values.agencyLogo,
+        city: values.city,
+        companyPhone: values.companyPhone,
+        country: values.country,
+        name: values.name,
+        state: values.state,
+        whiteLabel: values.whiteLabel,
+        zipCode: values.zipCode,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        companyEmail: values.companyEmail,
+        connectAccountId: '',
+        goal: 5,
+      })
+      toast({
+        title: 'Created Agency',
+      })
+      if (data?.id) return router.refresh()
+      if (response) {
+        return router.refresh()
       }
     } catch (error) {
-      console.log("error", error);
+      console.log(error)
       toast({
         variant: 'destructive',
-        title: 'Oppsie!',
+        title: 'Oppse!',
         description: 'could not create your agency',
-      });
+      })
     }
-  };
+  }
 
   const handleDeleteAgency = async () => {
     if (!data?.id) return;
