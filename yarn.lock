@@ -1206,6 +1206,13 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.7.2.tgz#2d4260033e199b3032a08b41348ac10de21c47e9"
   integrity sha512-RbhOOTCNoCrbfkRyoXODZp75MlpiHMgbE5MEBZAnnnLyQNgrigEj4p0lzsMDyc1zVsJDLrivB58tgg3emX0eEA==
 
+"@stripe/react-stripe-js@^2.5.0":
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/@stripe/react-stripe-js/-/react-stripe-js-2.5.0.tgz#bdc573dea15e48c7db91ea972cabefcc55767946"
+  integrity sha512-ys5bnrufNoBlUPRblWkiN7dUCX3s2noBZS0Lf5GkHYO9x3SXJMZccif53IdP4X6tZyNLn7aSMgZBUZqsdzrvhg==
+  dependencies:
+    prop-types "^15.7.2"
+
 "@stripe/stripe-js@^3.0.0":
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-3.0.0.tgz#1d0243227df0c710dfadc75927bc3b5f46383b54"
