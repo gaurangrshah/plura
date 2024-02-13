@@ -1,7 +1,9 @@
 'use server';
+
+import Stripe from 'stripe';
+
 import db from '../db';
 import { stripe } from './';
-import Stripe from 'stripe';
 
 export const subscriptionCreated = async (
   subscription: Stripe.Subscription,
@@ -27,7 +29,7 @@ export const subscriptionCreated = async (
       currentPeriodEndDate: new Date(subscription.current_period_end * 1000),
       //@ts-ignore
       priceId: subscription.plan.id,
-      subscritiptionId: subscription.id,
+      subscriptionId: subscription.id,
       //@ts-ignore
       plan: subscription.plan.id,
     };
