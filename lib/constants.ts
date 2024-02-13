@@ -28,6 +28,10 @@ import Video from '@/components/icons/video_recorder';
 import Wallet from '@/components/icons/wallet';
 import Warning from '@/components/icons/warning';
 
+export const addOnProducts = [
+  { title: 'Priority Support', id: 'prod_PYGpPXk6suUcIN' },
+];
+
 export const icons = [
   {
     value: 'chart',
@@ -193,7 +197,7 @@ export const pricingCards = [
     duration: 'month',
     highlight: 'Key features',
     features: ['Rebilling', '24/7 Support team'],
-    priceId: 'price_1OYxkqFj9oKEERu1KfJGWxgN',
+    priceId: 'price_1OjA6oL5h9gY5Th8osAxKHg6',
   },
   {
     title: 'Basic',
@@ -202,6 +206,6 @@ export const pricingCards = [
     duration: 'month',
     highlight: 'Everything in Starter, plus',
     features: ['Unlimited Sub accounts', 'Unlimited Team members'],
-    priceId: 'price_1OYxkqFj9oKEERu1NbKUxXxN',
+    priceId: 'price_1OjAASL5h9gY5Th8GeVc9aty',
   },
 ];
