@@ -13,9 +13,8 @@ import {
 } from '@/components/ui/card';
 
 import db from '@/lib/db';
+import { stripe } from '@/lib/stripe';
 import { getStripeOAuthLink } from '@/lib/utils';
-
-// import { stripe } from '@/lib/stripe'
 
 type Props = {
   params: {
@@ -30,6 +29,7 @@ export default async function LaunchPadPage({ params, searchParams }: Props) {
   })
 
   if (!agencyDetails) return
+
 
   const allDetailsExist = agencyDetails.address &&
     agencyDetails.address &&
@@ -51,19 +51,19 @@ export default async function LaunchPadPage({ params, searchParams }: Props) {
 
   if (searchParams.code) {
     if (!agencyDetails.connectAccountId) {
-      // try {
-      //   const response = await stripe.oauth.token({
-      //     grant_type: 'authorization_code',
-      //     code: searchParams.code,
-      //   })
-      //   await db.agency.update({
-      //     where: { id: params.agencyId },
-      //     data: { connectAccountId: response.stripe_user_id },
-      //   })
-      //   connectedStripeAccount = true
-      // } catch (error) {
-      //   console.log('🔴 Could not connect stripe account')
-      // }
+      try {
+        const response = await stripe.oauth.token({
+          grant_type: 'authorization_code',
+          code: searchParams.code,
+        })
+        await db.agency.update({
+          where: { id: params.agencyId },
+          data: { connectAccountId: response.stripe_user_id },
+        })
+        connectedStripeAccount = true
+      } catch (error) {
+        console.log('🔴 Could not connect stripe account')
+      }
     }
   }
 
@@ -125,7 +125,7 @@ export default async function LaunchPadPage({ params, searchParams }: Props) {
                   height={80}
                   width={80}
                   className="rounded-md object-contain" />
-                <p> Fill in all your bussiness details</p>
+                <p> Fill in all your business details</p>
               </div>
               {allDetailsExist ? (
                 <CheckCircleIcon

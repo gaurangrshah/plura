@@ -7,9 +7,14 @@ export async function POST(req: Request) {
   const { customerId, priceId } = await req.json();
   if (!customerId || !priceId) {
     if (process.env.NODE_ENV === 'development') {
-      console.log('customerId or priceId is missing from request body');
+      console.log(
+        'customerId or priceId is missing from request body::',
+        customerId,
+        'priceId:',
+        priceId
+      );
     }
-    return new NextResponse('Bad Request', {
+    return new NextResponse('Customer Id or price id is missing', {
       status: 400,
     });
   }
@@ -18,13 +23,9 @@ export async function POST(req: Request) {
     where: { customerId },
     include: { Subscription: true },
   });
+  console.log('🚀 | subscriptionExists:', subscriptionExists);
 
   try {
-    if (!subscriptionExists?.Subscription?.subscriptionId) {
-      throw new Error(
-        'Could not find the subscription Id to update the subscription.'
-      );
-    }
     if (
       // subscription exists and is active
       subscriptionExists?.Subscription?.subscriptionId &&
@@ -71,6 +72,7 @@ export async function POST(req: Request) {
         payment_settings: { save_default_payment_method: 'on_subscription' }, // save payment prefs
         expand: ['latest_invoice.payment_intent'],
       });
+      console.log('🚀 | subscription:', subscription);
       return NextResponse.json({
         subscriptionId: subscription.id,
         //@ts-ignore
