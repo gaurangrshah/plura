@@ -58,18 +58,20 @@ export default async function AgencyBillingPage({ params }: AgencyBillingPagePro
     customer: agencySubscription?.customerId,
   });
 
-  // build up charges array
-  const allCharges = [
-    ...charges.data.map((charge) => ({
-      description: charge.description,
-      id: charge.id,
-      date: `${new Date(charge.created * 1000).toLocaleTimeString()} ${new Date(
-        charge.created * 1000
-      ).toLocaleDateString()}`,
-      status: 'Paid',
-      amount: `$${charge.amount / 100}`,
-    })),
-  ]
+  const refunds = await stripe.refunds.list({ limit: 50 })
+
+  const allTransactionsSorted = [...charges.data, ...refunds.data].sort((a, b) => b.created - a.created)
+
+  const allTransactions = allTransactionsSorted.map((transaction) => ({
+    description: transaction.description ?? transaction.object,
+    id: transaction.id,
+    date: `${new Date(transaction.created * 1000).toLocaleTimeString()} ${new Date(
+      transaction.created * 1000
+    ).toLocaleDateString()}`,
+    status: transaction.object === 'charge' ? 'Paid' : 'Refunded',
+    amount: `$${transaction.amount / 100}`,
+  }));
+
 
   return (
     <>
@@ -154,21 +156,21 @@ export default async function AgencyBillingPage({ params }: AgencyBillingPagePro
           </TableRow>
         </TableHeader>
         <TableBody className="font-medium truncate">
-          {allCharges.map((charge) => (
-            <TableRow key={charge.id}>
-              <TableCell>{charge.description}</TableCell>
+          {allTransactions.map((transaction) => (
+            <TableRow key={transaction.id}>
+              <TableCell>{transaction.description}</TableCell>
               <TableCell className="text-muted-foreground">
-                {charge.id}
+                {transaction.id}
               </TableCell>
-              <TableCell>{charge.date}</TableCell>
+              <TableCell>{transaction.date}</TableCell>
               <TableCell>
                 <p
-                  className={cn('', charge.status.toLowerCase() === 'paid' && 'text-emerald-500', charge.status.toLowerCase() === 'pending' && 'text-orange-600', charge.status.toLowerCase() === 'failed' && 'text-red-600')}
+                  className={cn('', transaction.status.toLowerCase() === 'paid' && 'text-emerald-500', transaction.status.toLowerCase() === 'pending' && 'text-orange-600', transaction.status.toLowerCase() === 'failed' && 'text-red-600', transaction.status.toLowerCase() === 'refunded' && "text-gray-300")}
                 >
-                  {charge.status.toUpperCase()}
+                  {transaction.status.toUpperCase()}
                 </p>
               </TableCell>
-              <TableCell className="text-right">{charge.amount}</TableCell>
+              <TableCell className="text-right">{transaction.amount}</TableCell>
             </TableRow>
           ))}
         </TableBody>
