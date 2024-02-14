@@ -73,6 +73,7 @@ export function CreateFunnelPage({
     if (defaultData) {
       form.reset({ name: defaultData.name, pathName: defaultData.pathName })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultData])
 
   const onSubmit = async (values: z.infer<typeof FunnelPageSchema>) => {
@@ -108,7 +109,7 @@ export function CreateFunnelPage({
       console.log(error)
       toast({
         variant: 'destructive',
-        title: 'Oppse!',
+        title: 'Oopsie!',
         description: 'Could Save Funnel Page Details',
       })
     }
