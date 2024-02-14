@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/card';
 
 import db from '@/lib/db';
+import { stripe } from '@/lib/stripe';
 import { getStripeOAuthLink } from '@/lib/utils';
 
 type Props = {
@@ -44,6 +45,7 @@ export default async function LaunchPad({ params, searchParams }: Props) {
     subaccountDetails.name &&
     subaccountDetails.state
 
+  // subaccount stripe oauth link
   const stripeOAuthLink = getStripeOAuthLink(
     'subaccount',
     `launchpad___${subaccountDetails.id}`
@@ -53,19 +55,20 @@ export default async function LaunchPad({ params, searchParams }: Props) {
 
   if (searchParams.code) {
     if (!subaccountDetails.connectAccountId) {
-      // try {
-      //   const response = await stripe.oauth.token({
-      //     grant_type: 'authorization_code',
-      //     code: searchParams.code,
-      //   })
-      //   await db.subAccount.update({
-      //     where: { id: params.subaccountId },
-      //     data: { connectAccountId: response.stripe_user_id },
-      //   })
-      //   connectedStripeAccount = true
-      // } catch (error) {
-      //   console.log('🔴 Could not connect stripe account', error)
-      // }
+      try {
+        // connect stripe to subaccount
+        const response = await stripe.oauth.token({
+          grant_type: 'authorization_code',
+          code: searchParams.code,
+        })
+        await db.subAccount.update({
+          where: { id: params.subaccountId },
+          data: { connectAccountId: response.stripe_user_id },
+        })
+        connectedStripeAccount = true
+      } catch (error) {
+        console.log('🔴 Could not connect stripe account', error)
+      }
     }
   }
 
