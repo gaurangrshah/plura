@@ -50,12 +50,16 @@ export default async function LaunchPadPage({ params, searchParams }: Props) {
   let connectedStripeAccount = false
 
   if (searchParams.code) {
+    // if the user intends to connect their stripe account
     if (!agencyDetails.connectAccountId) {
+      // if the agency does not have a stripe account connected
       try {
+        // connect the agency to a stripe account
         const response = await stripe.oauth.token({
           grant_type: 'authorization_code',
           code: searchParams.code,
         })
+        // persist the stripe account id to the agency in db
         await db.agency.update({
           where: { id: params.agencyId },
           data: { connectAccountId: response.stripe_user_id },

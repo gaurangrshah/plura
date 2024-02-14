@@ -19,10 +19,17 @@ type SubscriptionHelperProps = {
   planExists: boolean
 }
 
+/**
+ * This component will render a modal with the subscription form
+ * if a plan is provided via query params (?plan=price_1JG3Z3J9z3j3j3j3j3j3j3j3)
+ * then we will open the modal with the subscription form with the plan pre-selected.
+ * Otherwise nothing renders
+*/
+
 export function SubscriptionHelper({ customerId, planExists, prices }: SubscriptionHelperProps) {
   const { setOpen } = useModal()
   const searchParams = useSearchParams()
-  const plan = searchParams.get('plan')
+  const plan = searchParams.get('plan') // ?plan=price_1JG3Z3J9z3j3j3j3j3j3j3j3
 
   useEffect(() => {
     if (plan)
@@ -45,5 +52,5 @@ export function SubscriptionHelper({ customerId, planExists, prices }: Subscript
       )
   }, [plan])
 
-  return <div>SubscriptionHelper</div>
+  return null;
 }

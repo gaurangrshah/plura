@@ -71,7 +71,6 @@ export async function POST(req: Request) {
         payment_settings: { save_default_payment_method: 'on_subscription' }, // save payment prefs
         expand: ['latest_invoice.payment_intent'],
       });
-      console.log('🚀 | subscription:', subscription);
       return NextResponse.json({
         subscriptionId: subscription.id,
         //@ts-ignore
