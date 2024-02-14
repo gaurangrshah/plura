@@ -23,12 +23,13 @@ import { useModal } from '@/providers/modal-provider';
 
 import { CreateFunnelPage } from '@/components/forms/funnel-page';
 import CustomModal from '@/components/global/custom-modal';
-import FunnelPagePlaceholder from '@/components/icons/funnel-page-placeholder';
+import {
+  FunnelPagePlaceholder,
+} from '@/components/icons/funnel-page-placeholder';
 import { AlertDialog } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import {
   Card,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -163,7 +164,6 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
                   title=" Create or Update a Funnel Page"
                   subheading="Funnel Pages allow you to create step by step processes for customers to follow"
                 >
-                  {null}
                   <CreateFunnelPage
                     subaccountId={subaccountId}
                     funnelId={funnelId}
@@ -182,7 +182,7 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
               <CardHeader>
                 <p className="text-sm text-muted-foreground">Page name</p>
                 <CardTitle>{clickedPage?.name}</CardTitle>
-                <CardDescription className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4">
                   <div className="border-2 rounded-lg sm:w-80 w-full  overflow-clip">
                     <Link
                       href={`/subaccount/${subaccountId}/funnels/${funnelId}/editor/${clickedPage?.id}`}
@@ -193,7 +193,7 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
                       </div>
                       <LucideEdit
                         size={50}
-                        className="!text-muted-foreground absolute top-1/2 left-1/2 opacity-0 transofrm -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 transition-all duration-100"
+                        className="!text-muted-foreground absolute top-1/2 left-1/2 opacity-0 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 transition-all duration-100"
                       />
                     </Link>
 
@@ -217,7 +217,7 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
                     funnelId={funnelId}
                     order={clickedPage?.order || 0}
                   />
-                </CardDescription>
+                </div>
               </CardHeader>
             </Card>
           ) : (
