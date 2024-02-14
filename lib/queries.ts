@@ -2,7 +2,10 @@
 
 import { redirect } from 'next/navigation';
 
-import { clerkClient, currentUser } from '@clerk/nextjs';
+import {
+  clerkClient,
+  currentUser,
+} from '@clerk/nextjs';
 
 import {
   Agency,
@@ -20,7 +23,10 @@ import { v4 } from 'uuid';
 import { z } from 'zod';
 
 import db from './db';
-import type { CreateFunnelFormSchema, CreateMediaType } from './types';
+import type {
+  CreateFunnelFormSchema,
+  CreateMediaType,
+} from './types';
 
 export const getAuthUserDetails = async () => {
   const user = await currentUser();
@@ -785,4 +791,13 @@ export const upsertContact = async (
     create: contact,
   });
   return response;
+};
+
+export const getFunnels = async (subacountId: string) => {
+  const funnels = await db.funnel.findMany({
+    where: { subAccountId: subacountId },
+    include: { FunnelPages: true },
+  });
+
+  return funnels;
 };
