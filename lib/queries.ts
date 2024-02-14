@@ -3,7 +3,10 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { clerkClient, currentUser } from '@clerk/nextjs';
+import {
+  clerkClient,
+  currentUser,
+} from '@clerk/nextjs';
 
 import {
   Agency,
@@ -862,3 +865,13 @@ export const deleteFunnelPage = async (funnelPageId: string) => {
 
   return response;
 };
+
+export const getFunnelPageDetails = async (funnelPageId: string) => {
+  const response = await db.funnelPage.findUnique({
+    where: {
+      id: funnelPageId,
+    },
+  })
+
+  return response
+}
