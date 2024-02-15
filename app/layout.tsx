@@ -1,14 +1,16 @@
-import type { Metadata } from 'next';
-
 import './globals.css';
 
-import { DM_Sans } from 'next/font/google';
+import type { Metadata } from 'next';
 
-import { Toaster } from '@/components/ui/toaster';
 import { ModalProvider } from '@/providers/modal-provider';
 import { ThemeProvider } from '@/providers/theme-provider';
 
-const font = DM_Sans({ subsets: ['latin'] });
+// import { DM_Sans } from 'next/font/google';
+import { Toaster } from '@/components/ui/toaster';
+
+import { GeistSans } from 'geist/font/sans';
+
+// const font = DM_Sans({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Plura',
@@ -22,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body className={font.className}>
+      <body className={GeistSans.className}>
         <ThemeProvider
           attribute='class'
           defaultTheme='system'
