@@ -86,6 +86,7 @@ export function SubscriptionFormWrapper({ customerId, planExists }: Subscription
       }
     }
     createSecret()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, selectedPriceId, customerId])
 
   return (

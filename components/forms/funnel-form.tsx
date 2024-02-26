@@ -73,6 +73,7 @@ export function FunnelForm({
         subDomainName: defaultData.subDomainName || '',
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultData])
 
   const isLoading = form.formState.isLoading
