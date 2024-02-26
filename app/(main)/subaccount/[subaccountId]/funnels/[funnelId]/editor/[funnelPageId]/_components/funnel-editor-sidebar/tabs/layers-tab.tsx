@@ -2,6 +2,13 @@
 
 import { useEditor } from '@/providers/editor/editor-provider';
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+
 export function LayersTab() {
   const { state, dispatch } = useEditor();
 
@@ -22,20 +29,36 @@ export function LayersTab() {
       };
 
       return (
-        <div key={element.id}>
-          <div className='text-sm p-1' style={{
-            marginLeft: `${depth * 2}px`,
+        element.content.length ? (
+          <AccordionItem value={element.id} key={element.id}>
+            <AccordionTrigger className='text-sm p-1' style={{
+              marginLeft: `${depth * 8}px`,
+              backgroundColor,
+              transition,
+              color
+            }}
+              onClick={handleClick}
+            >
+
+              {element.name}
+            </AccordionTrigger>
+            <AccordionContent>
+              {element.content && renderElements(element.content, depth + 1, isSelected)}
+            </AccordionContent>
+          </AccordionItem>
+        ) : (
+          <p key={element.id} style={{
+            marginLeft: `${depth * 8}px`,
             backgroundColor,
             transition,
             color
           }}
-            onClick={handleClick}>{element.name}
-          </div>
-          {element.content && renderElements(element.content, depth + 1, isSelected)}
-        </div>
+            onClick={handleClick} className='text-sm p-1 cursor-pointer'
+          >{element.name}</p>
+        )
       );
     });
   };
 
-  return <div>{renderElements(state.editor.elements)}</div>;
+  return <Accordion type="multiple">{renderElements(state.editor.elements)}</Accordion>;
 }
