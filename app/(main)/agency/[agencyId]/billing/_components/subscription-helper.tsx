@@ -50,6 +50,7 @@ export function SubscriptionHelper({ customerId, planExists, prices }: Subscript
           },
         })
       )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plan])
 
   return null;
