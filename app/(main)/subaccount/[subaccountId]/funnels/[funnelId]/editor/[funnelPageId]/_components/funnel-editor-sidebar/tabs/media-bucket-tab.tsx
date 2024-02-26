@@ -14,12 +14,12 @@ type Props = {
 }
 
 export function MediaBucketTab(props: Props) {
-  const [data, setdata] = useState<GetMediaFiles>(null)
+  const [data, setData] = useState<GetMediaFiles>(null)
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await getMedia(props.subaccountId)
-      setdata(response)
+      setData(response)
     }
     fetchData()
   }, [props.subaccountId])

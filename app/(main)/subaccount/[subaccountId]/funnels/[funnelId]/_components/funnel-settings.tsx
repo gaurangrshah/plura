@@ -32,11 +32,14 @@ export async function FunnelSettings({
   })
 
   if (!subaccountDetails) return
+  // get subaccount product listings from stripe
   if (!subaccountDetails.connectAccountId) return
+
   const products = await getConnectAccountProducts(
     subaccountDetails.connectAccountId
   )
-
+  // @TODO: if the account is not cancelled do not show the funnel page
+  // did he mean if the acct is not connected vs not cancelled?
   return (
     <div className="flex gap-4 flex-col xl:!flex-row">
       <Card className="flex-1 flex-shrink">

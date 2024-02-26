@@ -3,10 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import {
-  clerkClient,
-  currentUser,
-} from '@clerk/nextjs';
+import { clerkClient, currentUser } from '@clerk/nextjs';
 
 import {
   Agency,
@@ -842,8 +839,9 @@ export const upsertFunnelPage = async (
     create: {
       ...funnelPage,
       content: funnelPage.content
-        ? funnelPage.content
+        ? funnelPage.content // set funnel content
         : JSON.stringify([
+            // or create default funnel boilerplate
             {
               content: [],
               id: '__body',
@@ -871,7 +869,7 @@ export const getFunnelPageDetails = async (funnelPageId: string) => {
     where: {
       id: funnelPageId,
     },
-  })
+  });
 
-  return response
-}
+  return response;
+};

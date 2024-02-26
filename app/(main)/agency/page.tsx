@@ -1,12 +1,15 @@
 import { redirect } from 'next/navigation';
 
+import { currentUser } from '@clerk/nextjs';
+
+import { Plan } from '@prisma/client';
+
 import { AgencyDetails } from '@/components/forms/agency-details';
+
 import {
   getAuthUserDetails,
   verifyAndAcceptInvitation,
 } from '@/lib/queries';
-import { currentUser } from '@clerk/nextjs';
-import { Plan } from '@prisma/client';
 
 export default async function AgencyDashboard({
   searchParams,
@@ -14,7 +17,6 @@ export default async function AgencyDashboard({
   searchParams: { plan: Plan; state: string; code: string };
 }) {
   const agencyId = await verifyAndAcceptInvitation();
-  console.log('🚀 | agencyId:', agencyId);
 
   // get user details
   const user = await getAuthUserDetails();

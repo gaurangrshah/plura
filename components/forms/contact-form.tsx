@@ -40,7 +40,9 @@ export function ContactForm({ apiCall, subTitle, title }: ContactFormProps) {
   })
   const isLoading = form.formState.isLoading
 
-  //CHALLENGE: We want to create tags for each leads that comes from the form
+  //@TODO: We want to create tags for each leads that comes from the form
+  // the point of the tag is to identify which funnel the lead came from
+  // so instead we should just utilize the funnelId or even the url
 
   return (
     <Card className="max-w-[500px] w-[500px]">

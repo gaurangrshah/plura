@@ -21,9 +21,9 @@ export async function POST(req: Request) {
   if (
     !process.env.NEXT_PUBLIC_PLATFORM_SUBSCRIPTION_PERCENT ||
     !process.env.NEXT_PUBLIC_PLATFORM_ONETIME_FEE ||
-    !process.env.NEXT_PUBLIC_PLATFORM_AGENY_PERCENT
+    !process.env.NEXT_PUBLIC_PLATFORM_AGENT_PERCENT
   ) {
-    console.log('VALUES DONT EXITS');
+    console.log("VALUES DON'T EXIST");
     return NextResponse.json({ error: 'Fees do not exist' });
   }
 
@@ -41,18 +41,24 @@ export async function POST(req: Request) {
   // }
 
   try {
+    // stripe embedded checkout
     const session = await stripe.checkout.sessions.create(
       {
+        // all one-time payment products
         line_items: prices.map((price) => ({
           price: price.productId,
           quantity: 1,
         })),
 
+        // all subscription (repeating charges) products
         ...(subscriptionPriceExists && {
           subscription_data: {
+            // metadata is used to identify the connected account
+            // and configured to send payments to the connected account
             metadata: { connectAccountSubscriptions: 'true' },
-            application_fee_percent:
-              +process.env.NEXT_PUBLIC_PLATFORM_SUBSCRIPTION_PERCENT,
+            application_fee_percent: Number(
+              process.env.NEXT_PUBLIC_PLATFORM_SUBSCRIPTION_PERCENT
+            ),
           },
         }),
 
@@ -60,12 +66,13 @@ export async function POST(req: Request) {
           payment_intent_data: {
             metadata: { connectAccountPayments: 'true' },
             application_fee_amount:
-              +process.env.NEXT_PUBLIC_PLATFORM_ONETIME_FEE * 100,
+              Number(process.env.NEXT_PUBLIC_PLATFORM_ONETIME_FEE) * 100,
           },
         }),
 
-        mode: subscriptionPriceExists ? 'subscription' : 'payment',
+        mode: subscriptionPriceExists ? 'subscription' : 'payment', // set mode based on the product type
         ui_mode: 'embedded',
+        // we will handle the redirect for the embedded checkout
         redirect_on_completion: 'never',
       },
       { stripeAccount: subAccountConnectAccId }
@@ -77,6 +84,8 @@ export async function POST(req: Request) {
       },
       {
         headers: {
+          // allow the origin to access the response
+          // allows this endpoint to be called publicly from any origin
           'Access-Control-Allow-Origin': origin || '*',
           'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
@@ -90,6 +99,8 @@ export async function POST(req: Request) {
   }
 }
 
+// This is needed to allow the frontend to access the response
+// this avoids any CORS issues
 export async function OPTIONS(request: Request) {
   const allowedOrigin = request.headers.get('origin');
   const response = new NextResponse(null, {

@@ -45,7 +45,7 @@ import {
 
 type Props = {}
 
-export function SettingsTab (props: Props) {
+export function SettingsTab(props: Props) {
   const { state, dispatch } = useEditor()
 
   const handleOnChanges = (e: any) => {
@@ -108,9 +108,21 @@ export function SettingsTab (props: Props) {
                 <p className="text-muted-foreground">Link Path</p>
                 <Input
                   id="href"
-                  placeholder="https:domain.example.com/pathname"
+                  placeholder="https://domain.example.com/pathname"
                   onChange={handleChangeCustomValues}
                   value={state.editor.selectedElement.content.href}
+                />
+              </div>
+            )}
+          {state.editor.selectedElement.type === 'video' &&
+            !Array.isArray(state.editor.selectedElement.content) && (
+              <div className="flex flex-col gap-2">
+                <p className="text-muted-foreground">YouTube Source</p>
+                <Input
+                  id="href"
+                  placeholder="https://youtube.com/embed/{videoId}"
+                  onChange={handleChangeCustomValues}
+                  value={state.editor.selectedElement.content.src}
                 />
               </div>
             )}

@@ -48,6 +48,7 @@ export const subscriptionCreated = async (
 };
 
 export const getConnectAccountProducts = async (stripeAccount: string) => {
+  // get products for sub accounts
   const products = await stripe.products.list(
     {
       limit: 50,

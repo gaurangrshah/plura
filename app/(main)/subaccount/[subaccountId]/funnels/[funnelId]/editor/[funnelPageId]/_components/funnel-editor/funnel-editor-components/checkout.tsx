@@ -1,4 +1,5 @@
 'use client'
+
 import {
   useEffect,
   useMemo,
@@ -69,7 +70,7 @@ export function Checkout(props: FunnelEditorCheckoutProps) {
 
   useEffect(() => {
     if (livePrices.length && subaccountId && subAccountConnectAccId) {
-      const getClientSercet = async () => {
+      const getClientSecret = async () => {
         try {
           const body = JSON.stringify({
             subAccountConnectAccId,
@@ -84,30 +85,31 @@ export function Checkout(props: FunnelEditorCheckoutProps) {
               body,
             }
           )
+
           const responseJson = await response.json()
-          console.log(responseJson)
-          if (!responseJson) throw new Error('somethign went wrong')
+          if (!responseJson) throw new Error('something went wrong')
           if (responseJson.error) {
             throw new Error(responseJson.error)
           }
           if (responseJson.clientSecret) {
             setClientSecret(responseJson.clientSecret)
           }
-        } catch (error) {
+        } catch (error: any) {
           toast({
             open: true,
             className: 'z-[100000]',
             variant: 'destructive',
-            title: 'Oppse!',
+            title: 'Oopsie!',
             //@ts-ignore
             description: error.message,
           })
         }
       }
-      getClientSercet()
+      getClientSecret()
     }
   }, [livePrices, subaccountId, subAccountConnectAccId])
 
+  // required for one of the challenges
   const handleDragStart = (e: React.DragEvent, type: EditorBtns) => {
     if (type === null) return
     e.dataTransfer.setData('componentType', type)
@@ -124,11 +126,11 @@ export function Checkout(props: FunnelEditorCheckoutProps) {
   }
 
   const goToNextPage = async () => {
+    // @FIXME: this was not implemented -- noted it wasn't necessary
     if (!state.editor.liveMode) return
     const funnelPages = await getFunnel(funnelId)
     if (!funnelPages || !pageDetails) return
     if (funnelPages.FunnelPages.length > pageDetails.order + 1) {
-      console.log(funnelPages.FunnelPages.length, pageDetails.order + 1)
       const nextPage = funnelPages.FunnelPages.find(
         (page) => page.order === pageDetails.order + 1
       )
@@ -146,11 +148,12 @@ export function Checkout(props: FunnelEditorCheckoutProps) {
     })
   }
 
+
   return (
     <div
       style={styles}
       draggable
-      onDragStart={(e) => handleDragStart(e, 'contactForm')}
+      onDragStart={(e) => handleDragStart(e, 'contactForm')} // required for one of the challenges
       onClick={handleOnClickBody}
       className={clsx(
         'p-[2px] w-full m-[5px] relative text-[16px] transition-all flex items-center justify-center',

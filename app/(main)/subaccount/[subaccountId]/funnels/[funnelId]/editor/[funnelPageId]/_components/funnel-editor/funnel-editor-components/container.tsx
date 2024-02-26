@@ -170,6 +170,8 @@ export function Container({ element }: FunnelEditorContainerProps) {
 
   const handleDragStart = (e: React.DragEvent, type: string) => {
     if (type === '__body') return
+
+    // @TODO: on drag start when a rendered element is selected and dragged, the element should be duplicated automatically, this will allow us to quickly duplicate elements.
     e.dataTransfer.setData('componentType', type)
   }
 

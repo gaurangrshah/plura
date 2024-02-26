@@ -49,11 +49,15 @@ type FunnelStepsProps = {
 }
 
 export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelStepsProps) {
+  // persist selected funnel page
   const [clickedPage, setClickedPage] = useState<FunnelPage | undefined>(
     pages[0]
   )
   const { setOpen } = useModal()
-  const [pagesState, setPagesState] = useState(pages)
+  const [pagesState, setPagesState] = useState(pages) // all pages from funnel
+
+  const funnelPageUrl = `${process.env.NEXT_PUBLIC_SCHEME}${funnel.subDomainName}.${process.env.NEXT_PUBLIC_DOMAIN}/${clickedPage?.pathName}`;
+
   const onDragStart = (event: DragStart) => {
     //current chosen page
     const { draggableId } = event
@@ -146,6 +150,7 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
                           />
                         </div>
                       ))}
+                      {provided.placeholder}
                     </div>
                   )}
                 </Droppable>
@@ -182,6 +187,7 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
               <CardHeader>
                 <p className="text-sm text-muted-foreground">Page name</p>
                 <CardTitle>{clickedPage?.name}</CardTitle>
+                <p className="text-xs">{clickedPage?.id}</p>
                 <div className="flex flex-col gap-4">
                   <div className="border-2 rounded-lg sm:w-80 w-full  overflow-clip">
                     <Link
@@ -199,14 +205,12 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
 
                     <Link
                       target="_blank"
-                      href={`${process.env.NEXT_PUBLIC_SCHEME}${funnel.subDomainName}.${process.env.NEXT_PUBLIC_DOMAIN}/${clickedPage?.pathName}`}
+                      href={funnelPageUrl}
                       className="group flex items-center justify-start p-2 gap-2 hover:text-primary transition-colors duration-200"
                     >
                       <ExternalLink size={15} />
                       <div className="w-64 overflow-hidden overflow-ellipsis ">
-                        {process.env.NEXT_PUBLIC_SCHEME}
-                        {funnel.subDomainName}.{process.env.NEXT_PUBLIC_DOMAIN}/
-                        {clickedPage?.pathName}
+                        {funnelPageUrl}
                       </div>
                     </Link>
                   </div>

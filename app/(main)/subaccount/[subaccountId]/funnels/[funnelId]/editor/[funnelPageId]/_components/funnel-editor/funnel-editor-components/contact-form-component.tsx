@@ -30,7 +30,7 @@ type FunnelEditorContactFormComponentProps = {
   element: EditorElement
 }
 
-export function ContactFormComponent (props: FunnelEditorContactFormComponentProps) {
+export function ContactFormComponent(props: FunnelEditorContactFormComponentProps) {
   const { dispatch, state, subaccountId, funnelId, pageDetails } = useEditor()
   const router = useRouter()
 
@@ -76,14 +76,14 @@ export function ContactFormComponent (props: FunnelEditorContactFormComponentPro
   const onFormSubmit = async (
     values: z.infer<typeof ContactUserFormSchema>
   ) => {
-    if (!state.editor.liveMode) return
+    if (!state.editor.liveMode && !state.editor.previewMode) return
 
     try {
       const response = await upsertContact({
         ...values,
         subAccountId: subaccountId,
       })
-      //WIP Call trigger endpoint
+      //@TODO: Call trigger endpoint
       await saveActivityLogsNotification({
         agencyId: undefined,
         description: `A New contact signed up | ${response?.name}`,

@@ -14,7 +14,7 @@ import {
 
 type Props = {}
 
-export function TabList (props: Props) {
+export function TabList(props: Props) {
   return (
     <TabsList className=" flex items-center flex-col justify-evenly w-full bg-transparent h-fit gap-4 ">
       <TabsTrigger

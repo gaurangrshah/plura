@@ -17,6 +17,7 @@ import {
 
 import { TabList } from './tabs';
 import { ComponentsTab } from './tabs/components-tab';
+import { LayersTab } from './tabs/layers-tab';
 import { MediaBucketTab } from './tabs/media-bucket-tab';
 import { SettingsTab } from './tabs/settings-tab';
 import clsx from 'clsx';
@@ -25,7 +26,7 @@ type FunnelEditorSidebarProps = {
   subaccountId: string
 }
 
-export function FunnelEditorSidebar ({ subaccountId }: FunnelEditorSidebarProps) {
+export function FunnelEditorSidebar({ subaccountId }: FunnelEditorSidebarProps) {
   const { state, dispatch } = useEditor()
 
   return (
@@ -77,6 +78,15 @@ export function FunnelEditorSidebar ({ subaccountId }: FunnelEditorSidebarProps)
                 </SheetDescription>
               </SheetHeader>
               <ComponentsTab />
+            </TabsContent>
+            <TabsContent value="Layers">
+              <SheetHeader className="text-left p-6 ">
+                <SheetTitle>Tabs</SheetTitle>
+                <SheetDescription>
+                  Select a layer to get started.
+                </SheetDescription>
+              </SheetHeader>
+              <LayersTab />
             </TabsContent>
           </div>
         </SheetContent>

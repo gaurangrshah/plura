@@ -25,9 +25,10 @@ export function FunnelEditor({ funnelPageId, liveMode }: FunnelEditorProps) {
         payload: { value: true },
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [liveMode])
 
-  //CHALLENGE: make this more performant
+  // @TODO: CHALLENGE: make this more performant
   useEffect(() => {
     const fetchData = async () => {
       const response = await getFunnelPageDetails(funnelPageId)
@@ -42,6 +43,7 @@ export function FunnelEditor({ funnelPageId, liveMode }: FunnelEditorProps) {
       })
     }
     fetchData()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [funnelPageId])
 
   const handleClick = () => {

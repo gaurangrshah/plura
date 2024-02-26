@@ -1,5 +1,8 @@
 'use client'
-import { useState } from 'react';
+import {
+  useEffect,
+  useState,
+} from 'react';
 
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -24,6 +27,8 @@ import {
   updateFunnelProducts,
 } from '@/lib/queries';
 
+import { toast } from 'sonner';
+
 interface FunnelProductsTableProps {
   defaultData: Funnel
   products: Stripe.Product[]
@@ -35,16 +40,30 @@ export function FunnelProductsTable({
 }: FunnelProductsTableProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+
+  // a collection of products that are live on the funnel
   const [liveProducts, setLiveProducts] = useState<
     { productId: string; recurring: boolean }[] | []
   >(JSON.parse(defaultData.liveProducts || '[]'))
 
+  /**
+   * Handles the saving of products to the funnel.
+   *
+   * @returns {Promise<void>} A promise that resolves when the products are saved.
+   */
   const handleSaveProducts = async () => {
     setIsLoading(true)
+    // save the products to the funnel
     const response = await updateFunnelProducts(
       JSON.stringify(liveProducts),
       defaultData.id
     )
+
+    if (response) {
+      toast.success('Products saved successfully')
+    } else {
+      toast.error('Failed to save products')
+    }
     await saveActivityLogsNotification({
       agencyId: undefined,
       description: `Update funnel products | ${response.name}`,
@@ -54,11 +73,17 @@ export function FunnelProductsTable({
     router.refresh()
   }
 
+  /**
+   * Handles the addition of a product to the live products list.
+   *
+   * @param product - The product to be added.
+   */
   const handleAddProduct = async (product: Stripe.Product) => {
     const productIdExists = liveProducts.find(
       //@ts-ignore
       (prod) => prod.productId === product.default_price.id
     )
+
     productIdExists
       ? setLiveProducts(
         liveProducts.filter(
@@ -79,6 +104,8 @@ export function FunnelProductsTable({
         },
       ])
   }
+
+  useEffect(() => console.log(liveProducts), [liveProducts])
   return (
     <>
       <Table className="bg-card border-[1px] border-border rounded-md">
@@ -104,7 +131,7 @@ export function FunnelProductsTable({
                   }
                   onChange={() => handleAddProduct(product)}
                   type="checkbox"
-                  className="w-4 h-4"
+                  className="w-4 h-4 border border-red-500"
                 />
               </TableCell>
               <TableCell>

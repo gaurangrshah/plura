@@ -80,7 +80,7 @@ export function CreateFunnelPage({
     if (order !== 0 && !values.pathName)
       return form.setError('pathName', {
         message:
-          "Pages other than the first page in the funnel require a path name example 'secondstep'.",
+          "Pages other than the first page in the funnel require a path name example 'second-step'.",
       })
     try {
       const response = await upsertFunnelPage(
@@ -193,6 +193,8 @@ export function CreateFunnelPage({
                   {form.formState.isSubmitting ? <Loading /> : <Trash />}
                 </Button>
               )}
+
+              {/* Funnel Page Duplicate Action */}
               {defaultData?.id && (
                 <Button
                   variant={'outline'}

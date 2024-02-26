@@ -53,7 +53,7 @@ type FunnelEditorNavigationProps = {
   subaccountId: string
 }
 
-export function FunnelEditorNavigation  ({
+export function FunnelEditorNavigation({
   funnelId,
   funnelPageDetails,
   subaccountId,
@@ -171,7 +171,7 @@ export function FunnelEditorNavigation  ({
           >
             <TabsList className="grid w-full grid-cols-3 bg-transparent h-fit">
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <TabsTrigger
                     value="Desktop"
                     className="data-[state=active]:bg-muted w-10 h-10 p-0"
@@ -184,7 +184,7 @@ export function FunnelEditorNavigation  ({
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <TabsTrigger
                     value="Tablet"
                     className="w-10 h-10 p-0 data-[state=active]:bg-muted"
@@ -197,7 +197,7 @@ export function FunnelEditorNavigation  ({
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
-                <TooltipTrigger>
+                <TooltipTrigger asChild>
                   <TabsTrigger
                     value="Mobile"
                     className="w-10 h-10 p-0 data-[state=active]:bg-muted"

@@ -1,4 +1,5 @@
 'use client'
+
 import {
   createContext,
   Dispatch,
@@ -19,7 +20,9 @@ export type EditorElement = {
   styles: React.CSSProperties
   name: string
   type: EditorBtns
+  // custom element attributes i.e., (href, innerText, src)
   content: EditorElement[] | { href?: string; innerText?: string; src?: string }
+
 }
 
 export type Editor = {
@@ -74,7 +77,14 @@ const initialState: EditorState = {
   history: initialHistoryState,
 }
 
-const addAnElement = (
+/**
+ * recursively adds an element to the editor array based on the provided action
+ * @param editorArray - The array of editor elements.
+ * @param action - The action object containing the element details and container ID.
+ * @returns The updated editor array with the new element added.
+ * @throws Error if the action type is not 'ADD_ELEMENT'.
+ */
+const addElement = (
   editorArray: EditorElement[],
   action: EditorAction
 ): EditorElement[] => {
@@ -91,14 +101,14 @@ const addAnElement = (
     } else if (item.content && Array.isArray(item.content)) {
       return {
         ...item,
-        content: addAnElement(item.content, action),
+        content: addElement(item.content, action),
       }
     }
     return item
   })
 }
 
-const updateAnElement = (
+const updateElement = (
   editorArray: EditorElement[],
   action: EditorAction
 ): EditorElement[] => {
@@ -111,14 +121,14 @@ const updateAnElement = (
     } else if (item.content && Array.isArray(item.content)) {
       return {
         ...item,
-        content: updateAnElement(item.content, action),
+        content: updateElement(item.content, action),
       }
     }
     return item
   })
 }
 
-const deleteAnElement = (
+const deleteElement = (
   editorArray: EditorElement[],
   action: EditorAction
 ): EditorElement[] => {
@@ -130,11 +140,13 @@ const deleteAnElement = (
     if (item.id === action.payload.elementDetails.id) {
       return false
     } else if (item.content && Array.isArray(item.content)) {
-      item.content = deleteAnElement(item.content, action)
+      item.content = deleteElement(item.content, action)
     }
     return true
   })
 }
+
+
 
 const editorReducer = (
   state: EditorState = initialState,
@@ -144,7 +156,7 @@ const editorReducer = (
     case 'ADD_ELEMENT':
       const updatedEditorState = {
         ...state.editor,
-        elements: addAnElement(state.editor.elements, action),
+        elements: addElement(state.editor.elements, action),
       }
       // Update the history to include the entire updated EditorState
       const updatedHistory = [
@@ -166,7 +178,7 @@ const editorReducer = (
 
     case 'UPDATE_ELEMENT':
       // Perform your logic to update the element in the state
-      const updatedElements = updateAnElement(state.editor.elements, action)
+      const updatedElements = updateElement(state.editor.elements, action)
 
       const UpdatedElementIsSelected =
         state.editor.selectedElement.id === action.payload.elementDetails.id
@@ -202,7 +214,7 @@ const editorReducer = (
 
     case 'DELETE_ELEMENT':
       // Perform your logic to delete the element from the state
-      const updatedElementsAfterDelete = deleteAnElement(
+      const updatedElementsAfterDelete = deleteElement(
         state.editor.elements,
         action
       )
@@ -359,7 +371,7 @@ export type EditorContextData = {
 }
 
 export const EditorContext = createContext<{
-  state: EditorState
+  state: EditorState // @TODO: persist editor state / history in local storage
   dispatch: Dispatch<EditorAction>
   subaccountId: string
   funnelId: string
