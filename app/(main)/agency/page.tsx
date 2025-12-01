@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { currentUser } from '@clerk/nextjs';
 
-import { Plan } from '@prisma/client';
+import type { Plan } from '@/lib/types';
 
 import { AgencyDetails } from '@/components/forms/agency-details';
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import { UserButton } from '@clerk/nextjs';
 
-import { Role } from '@prisma/client';
+import type { Role } from '@/lib/types';
 
 import { Bell } from 'lucide-react';
 

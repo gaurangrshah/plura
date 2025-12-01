@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { currentUser } from '@clerk/nextjs';
 
-import { Role } from '@prisma/client';
+import type { Role } from '@/lib/types';
 
 import { InfoBar } from '@/components/global/info-bar';
 import { Sidebar } from '@/components/sidebar';

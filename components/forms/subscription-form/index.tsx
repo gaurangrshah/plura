@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-import { Plan } from '@prisma/client';
+import type { Plan } from '@/lib/types';
 
 import {
   PaymentElement,

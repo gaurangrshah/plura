@@ -3,11 +3,14 @@ import type {
   Lane,
   Notification,
   Prisma,
-  Role,
   Tag,
   Ticket,
   User,
 } from '@prisma/client';
+
+// Types converted from Prisma enums to strings for SQLite compatibility
+export type Role = 'AGENCY_OWNER' | 'AGENCY_ADMIN' | 'SUBACCOUNT_USER' | 'SUBACCOUNT_GUEST';
+export type Plan = 'price_1OYxkqFj9oKEERu1NbKUxXxN' | 'price_1OYxkqFj9oKEERu1KfJGWxgN' | string;
 
 import { z } from 'zod';
 

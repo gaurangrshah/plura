@@ -7,7 +7,7 @@ import React, {
 
 import { useRouter } from 'next/navigation';
 
-import { Plan } from '@prisma/client';
+import type { Plan } from '@/lib/types';
 
 import { Elements } from '@stripe/react-stripe-js';
 // @ts-ignore

@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-import { Role } from '@prisma/client';
+import type { Role } from '@/lib/types';
 
 import {
   Copy,
