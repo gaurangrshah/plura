@@ -116,7 +116,7 @@ export function UserDetails({
       name: userData ? userData.name : data?.user?.name,
       email: userData ? userData.email : data?.user?.email,
       avatarUrl: userData ? userData.avatarUrl : data?.user?.avatarUrl,
-      role: userData ? userData.role : data?.user?.role,
+      role: (userData ? userData.role : data?.user?.role) as 'AGENCY_OWNER' | 'AGENCY_ADMIN' | 'SUBACCOUNT_USER' | 'SUBACCOUNT_GUEST' | undefined,
     },
   })
 
