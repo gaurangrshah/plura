@@ -13,16 +13,9 @@ import {
 } from '@/components/ui/card';
 
 import { pricingCards } from '@/lib/constants';
-import { stripe } from '@/lib/stripe';
 import { cn } from '@/lib/utils';
 
 export default async function Home() {
-
-  const prices = await stripe.prices.list({
-    // https://dashboard.stripe.com/test/products/prod_PZOtnzITgi4ebX
-    product: process.env.NEXT_PUBLIC_PRODUCT_ID || 'prod_PZOtnzITgi4ebX', // product id from plura product catalog page
-    active: true,
-  })
 
   return (
     <>
@@ -55,59 +48,48 @@ export default async function Home() {
           {" you're"} not <br />
           ready to commit you can get started for free.
         </p>
-        <div className="flex  justify-center gap-4 flex-wrap mt-6">
-          {prices.data.map((card) => (
-            //WIP: Wire up free product from stripe
+        <div className="flex justify-center gap-4 flex-wrap mt-6">
+          {/* Render pricing cards - use Stripe data if available, otherwise static */}
+          {pricingCards.map((card) => (
             <Card
-              key={card.nickname}
+              key={card.title}
               className={cn('w-[300px] flex flex-col justify-between', {
-                'border-2 border-primary': card.nickname === 'Unlimited Saas',
+                'border-2 border-primary': card.title === 'Unlimited Saas',
               })}
             >
               <CardHeader>
                 <CardTitle
                   className={cn('', {
-                    'text-muted-foreground': card.nickname !== 'Unlimited Saas',
+                    'text-muted-foreground': card.title !== 'Unlimited Saas',
                   })}
                 >
-                  {card.nickname}
+                  {card.title}
                 </CardTitle>
-                <CardDescription>
-                  {
-                    pricingCards.find((c) => c.title === card.nickname)
-                      ?.description
-                  }
-                </CardDescription>
+                <CardDescription>{card.description}</CardDescription>
               </CardHeader>
               <CardContent>
-                <span className="text-4xl font-bold">
-                  {card.unit_amount && card.unit_amount / 100}
-                </span>
-                <span className="text-muted-foreground">
-                  <span>/ {card.recurring?.interval}</span>
-                </span>
+                <span className="text-4xl font-bold">{card.price}</span>
+                {card.duration && (
+                  <span className="text-muted-foreground">
+                    <span>/ {card.duration}</span>
+                  </span>
+                )}
               </CardContent>
               <CardFooter className="flex flex-col items-start gap-4">
                 <div>
-                  {pricingCards
-                    .find((c) => c.title === card.nickname)
-                    ?.features.map((feature) => (
-                      <div
-                        key={feature}
-                        className="flex gap-2"
-                      >
-                        <Check />
-                        <p>{feature}</p>
-                      </div>
-                    ))}
+                  {card.features.map((feature) => (
+                    <div key={feature} className="flex gap-2">
+                      <Check />
+                      <p>{feature}</p>
+                    </div>
+                  ))}
                 </div>
                 <Link
-                  href={`/agency?plan=${card.id}`}
+                  href={card.priceId ? `/agency?plan=${card.priceId}` : '/agency'}
                   className={cn(
                     'w-full text-center bg-primary p-2 rounded-md',
                     {
-                      '!bg-muted-foreground':
-                        card.nickname !== 'Unlimited Saas',
+                      '!bg-muted-foreground': card.title !== 'Unlimited Saas',
                     }
                   )}
                 >
@@ -116,48 +98,6 @@ export default async function Home() {
               </CardFooter>
             </Card>
           ))}
-          <Card className={cn('w-[300px] flex flex-col justify-between')}>
-            <CardHeader>
-              <CardTitle
-                className={cn({
-                  'text-muted-foreground': true,
-                })}
-              >
-                {pricingCards[0].title}
-              </CardTitle>
-              <CardDescription>{pricingCards[0].description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <span className="text-4xl font-bold">$0</span>
-              <span>/ month</span>
-            </CardContent>
-            <CardFooter className="flex flex-col  items-start gap-4 ">
-              <div>
-                {pricingCards
-                  .find((c) => c.title === 'Starter')
-                  ?.features.map((feature) => (
-                    <div
-                      key={feature}
-                      className="flex gap-2"
-                    >
-                      <Check />
-                      <p>{feature}</p>
-                    </div>
-                  ))}
-              </div>
-              <Link
-                href="/agency"
-                className={cn(
-                  'w-full text-center bg-primary p-2 rounded-md',
-                  {
-                    '!bg-muted-foreground': true,
-                  }
-                )}
-              >
-                Get Started
-              </Link>
-            </CardFooter>
-          </Card>
         </div>
       </section>
     </>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Link from 'next/link';
 
@@ -55,6 +55,22 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
   )
   const { setOpen } = useModal()
   const [pagesState, setPagesState] = useState(pages) // all pages from funnel
+
+  // Sync state when pages prop changes (after router.refresh())
+  useEffect(() => {
+    setPagesState(pages);
+    // Update clickedPage if it was modified, or set to first page if not set
+    if (clickedPage) {
+      const updatedPage = pages.find(p => p.id === clickedPage.id);
+      if (updatedPage) {
+        setClickedPage(updatedPage);
+      } else if (pages.length > 0) {
+        setClickedPage(pages[0]);
+      }
+    } else if (pages.length > 0) {
+      setClickedPage(pages[0]);
+    }
+  }, [pages]);
 
   const funnelPageUrl = `${process.env.NEXT_PUBLIC_SCHEME}${funnel.subDomainName}.${process.env.NEXT_PUBLIC_DOMAIN}/${clickedPage?.pathName}`;
 
@@ -190,18 +206,26 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
                 <p className="text-xs">{clickedPage?.id}</p>
                 <div className="flex flex-col gap-4">
                   <div className="border-2 rounded-lg sm:w-80 w-full  overflow-clip">
+                    {clickedPage?.id ? (
                     <Link
-                      href={`/subaccount/${subaccountId}/funnels/${funnelId}/editor/${clickedPage?.id}`}
-                      className="relative group"
+                      href={`/subaccount/${subaccountId}/funnels/${funnelId}/editor/${clickedPage.id}`}
+                      className="group block"
                     >
-                      <div className="cursor-pointer group-hover:opacity-30 w-full">
+                      <div className="relative cursor-pointer w-full">
+                        <div className="group-hover:opacity-30 transition-opacity duration-100">
+                          <FunnelPagePlaceholder />
+                        </div>
+                        <LucideEdit
+                          size={50}
+                          className="!text-muted-foreground absolute top-1/2 left-1/2 opacity-0 -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 transition-opacity duration-100"
+                        />
+                      </div>
+                    </Link>
+                    ) : (
+                      <div className="cursor-pointer w-full">
                         <FunnelPagePlaceholder />
                       </div>
-                      <LucideEdit
-                        size={50}
-                        className="!text-muted-foreground absolute top-1/2 left-1/2 opacity-0 transform -translate-x-1/2 -translate-y-1/2 group-hover:opacity-100 transition-all duration-100"
-                      />
-                    </Link>
+                    )}
 
                     <Link
                       target="_blank"
@@ -219,7 +243,7 @@ export function FunnelSteps({ funnel, funnelId, pages, subaccountId }: FunnelSte
                     subaccountId={subaccountId}
                     defaultData={clickedPage}
                     funnelId={funnelId}
-                    order={clickedPage?.order || 0}
+                    order={pagesState.findIndex(p => p.id === clickedPage?.id)}
                   />
                 </div>
               </CardHeader>

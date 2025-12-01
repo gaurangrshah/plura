@@ -32,12 +32,20 @@ export async function FunnelSettings({
   })
 
   if (!subaccountDetails) return
-  // get subaccount product listings from stripe
-  if (!subaccountDetails.connectAccountId) return
 
-  const products = await getConnectAccountProducts(
-    subaccountDetails.connectAccountId
-  )
+  // Check if Stripe is stubbed
+  const isStripeStubbed = () => {
+    const key = process.env.STRIPE_SECRET_KEY || '';
+    return key.includes('stub') || !key.startsWith('sk_');
+  };
+
+  // Get products only if Stripe is connected and not stubbed
+  let products: any[] = [];
+  if (subaccountDetails.connectAccountId && !isStripeStubbed()) {
+    products = await getConnectAccountProducts(
+      subaccountDetails.connectAccountId
+    );
+  }
   // @TODO: if the account is not cancelled do not show the funnel page
   // did he mean if the acct is not connected vs not cancelled?
   return (
@@ -52,11 +60,13 @@ export async function FunnelSettings({
         </CardHeader>
         <CardContent>
           <>
-            {subaccountDetails.connectAccountId ? (
+            {subaccountDetails.connectAccountId && !isStripeStubbed() ? (
               <FunnelProductsTable
                 defaultData={defaultData}
                 products={products}
               />
+            ) : isStripeStubbed() ? (
+              <p className="text-muted-foreground">Stripe is not configured. Product management is disabled.</p>
             ) : (
               'Connect your stripe account to sell products.'
             )}

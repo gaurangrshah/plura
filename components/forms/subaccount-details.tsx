@@ -101,7 +101,7 @@ export function SubAccountDetails({
       });
       if (!response) throw new Error('No response from server');
       await saveActivityLogsNotification({
-        agencyId: response.agencyId,
+        agencyId: response.agencyId || agencyDetails.id,
         description: `${userName} | updated sub account | ${response.name}`,
         subaccountId: response.id,
       });

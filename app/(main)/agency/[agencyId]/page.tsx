@@ -116,7 +116,8 @@ const Page = async ({
 
   return (
     <div className="relative h-full">
-      {!agencyDetails.connectAccountId && (
+      {/* Only show Stripe connect prompt if Stripe is actually configured */}
+      {!agencyDetails.connectAccountId && !process.env.STRIPE_SECRET_KEY?.includes('stub') && (
         <div className="absolute -top-10 -left-10 right-0 bottom-0 z-30 flex items-center justify-center backdrop-blur-md bg-background/50">
           <Card>
             <CardHeader>
@@ -185,10 +186,10 @@ const Page = async ({
             <CardHeader>
               <CardTitle>Agency Goal</CardTitle>
               <CardDescription>
-                <p className="mt-2">
+                <span className="mt-2 block">
                   Reflects the number of sub accounts you want to own and
                   manage.
-                </p>
+                </span>
               </CardDescription>
             </CardHeader>
             <CardFooter>

@@ -15,6 +15,14 @@ export async function POST(req: Request) {
       status: 400,
     });
   }
+
+  // If Stripe is not configured (stub key), return a mock customer ID
+  const stripeKey = process.env.STRIPE_SECRET_KEY || '';
+  if (stripeKey.includes('stub') || !stripeKey.startsWith('sk_')) {
+    console.log('Stripe not configured, using mock customer ID');
+    return Response.json({ customerId: `mock_cus_${Date.now()}` });
+  }
+
   try {
     const customer = await stripe.customers.create({
       email,

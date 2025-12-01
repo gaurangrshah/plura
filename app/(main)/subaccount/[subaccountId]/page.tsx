@@ -145,7 +145,8 @@ const SubaccountPageId = async ({ params, searchParams }: Props) => {
   return (
     <BlurPage>
       <div className="relative h-full">
-        {!subaccountDetails.connectAccountId && (
+        {/* Only show Stripe connect prompt if Stripe is actually configured */}
+        {!subaccountDetails.connectAccountId && !process.env.STRIPE_SECRET_KEY?.includes('stub') && (
           <div className="absolute -top-10 -left-10 right-0 bottom-0 z-30 flex items-center justify-center backdrop-blur-md bg-background/50">
             <Card>
               <CardHeader>

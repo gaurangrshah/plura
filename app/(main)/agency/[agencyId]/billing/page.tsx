@@ -23,12 +23,31 @@ type AgencyBillingPageProps = {
   params: { agencyId: string }
 }
 
+// Check if Stripe is stubbed/not configured
+const isStripeStubbed = () => {
+  const key = process.env.STRIPE_SECRET_KEY || '';
+  return key.includes('stub') || !key.startsWith('sk_');
+};
+
 export default async function AgencyBillingPage({ params }: AgencyBillingPageProps) {
-  // challenge: Create the add on products
-  const addOns = await stripe.products.list({
-    ids: addOnProducts.map((product) => product.id),
-    expand: ['data.default_price'],
-  })
+  // Use mock data when Stripe is stubbed
+  let addOns = { data: [] as any[] };
+  let prices = { data: [] as any[] };
+  let charges = { data: [] as any[] };
+  let refunds = { data: [] as any[] };
+
+  if (!isStripeStubbed()) {
+    // Real Stripe API calls
+    addOns = await stripe.products.list({
+      ids: addOnProducts.map((product) => product.id),
+      expand: ['data.default_price'],
+    });
+
+    prices = await stripe.prices.list({
+      product: process.env.NEXT_PUBLIC_PRODUCT_ID || "",
+      active: true,
+    });
+  }
 
   const agencySubscription = await db.agency.findUnique({
     where: {
@@ -40,25 +59,18 @@ export default async function AgencyBillingPage({ params }: AgencyBillingPagePro
     },
   })
 
-  const prices = await stripe.prices.list({
-    product: process.env.NEXT_PUBLIC_PRODUCT_ID || "",
-    // includes only active products
-    active: true,
-  })
+  if (!isStripeStubbed() && agencySubscription?.customerId) {
+    charges = await stripe.charges.list({
+      limit: 50,
+      customer: agencySubscription.customerId,
+    });
+
+    refunds = await stripe.refunds.list({ limit: 50 });
+  }
 
   const currentPlanDetails = pricingCards.find(
     (c) => c.priceId === agencySubscription?.Subscription?.priceId
   )
-
-
-  // customer specific charges
-  const defaultCharges = { data: [] };
-  const charges = await stripe.charges.list({
-    limit: 50,
-    customer: agencySubscription?.customerId,
-  });
-
-  const refunds = await stripe.refunds.list({ limit: 50 })
 
   const allTransactionsSorted = [...charges.data, ...refunds.data].sort((a, b) => b.created - a.created)
 

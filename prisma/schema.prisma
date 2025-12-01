@@ -1,5 +1,5 @@
 datasource db {
-  provider     = "mysql"
+  provider     = "sqlite"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
@@ -8,54 +8,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum Role {
-  AGENCY_OWNER
-  AGENCY_ADMIN
-  SUBACCOUNT_USER
-  SUBACCOUNT_GUEST
-}
-
-enum Icon {
-  settings
-  chart
-  calendar
-  check
-  chip
-  compass
-  database
-  flag
-  home
-  info
-  link
-  lock
-  messages
-  notification
-  payment
-  power
-  receipt
-  shield
-  star
-  tune
-  videorecorder
-  wallet
-  warning
-  headphone
-  send
-  pipelines
-  person
-  category
-  contact
-  clipboardIcon
-}
+// Role values: AGENCY_OWNER, AGENCY_ADMIN, SUBACCOUNT_USER, SUBACCOUNT_GUEST
+// Icon values: settings, chart, calendar, check, chip, compass, database, flag, home, info, link, lock, messages, notification, payment, power, receipt, shield, star, tune, videorecorder, wallet, warning, headphone, send, pipelines, person, category, contact, clipboardIcon
 
 model User {
   id           String         @id @default(uuid())
   name         String
-  avatarUrl    String         @db.Text
+  avatarUrl    String
   email        String         @unique
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
-  role         Role           @default(SUBACCOUNT_USER)
+  role         String         @default("SUBACCOUNT_USER")
   agencyId     String?
   Agency       Agency?        @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   Permissions  Permissions[]
@@ -83,8 +46,8 @@ model Agency {
   connectAccountId String?               @default("")
   customerId       String                @default("")
   name             String
-  agencyLogo       String                @db.Text
-  companyEmail     String                @db.Text
+  agencyLogo       String
+  companyEmail     String
   companyPhone     String
   whiteLabel       Boolean               @default(true)
   address          String
@@ -108,10 +71,10 @@ model SubAccount {
   id               String                    @id @default(uuid())
   connectAccountId String?                   @default("")
   name             String
-  subAccountLogo   String                    @db.Text
+  subAccountLogo   String
   createdAt        DateTime                  @default(now())
   updatedAt        DateTime                  @updatedAt
-  companyEmail     String                    @db.Text
+  companyEmail     String
   companyPhone     String
   goal             Int                       @default(5)
   address          String
@@ -197,14 +160,12 @@ model Ticket {
   @@index([assignedUserId])
 }
 
-enum TriggerTypes {
-  CONTACT_FORM
-}
+// TriggerTypes values: CONTACT_FORM
 
 model Trigger {
   id           String       @id @default(uuid())
   name         String
-  type         TriggerTypes
+  type         String
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
   subAccountId String
@@ -242,14 +203,12 @@ model AutomationInstance {
   @@index([automationId])
 }
 
-enum ActionType {
-  CREATE_CONTACT
-}
+// ActionType values: CREATE_CONTACT
 
 model Action {
   id           String     @id @default(uuid())
   name         String
-  type         ActionType
+  type         String
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   automationId String
@@ -295,7 +254,7 @@ model Funnel {
   description   String?
   published     Boolean      @default(false)
   subDomainName String?      @unique
-  favicon       String?      @db.Text
+  favicon       String?
   subAccountId  String
   SubAccount    SubAccount   @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
   FunnelPages   FunnelPage[]
@@ -312,7 +271,7 @@ model ClassName {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   funnelId   String
-  customData String?  @db.LongText
+  customData String?
   Funnel     Funnel   @relation(fields: [funnelId], references: [id], onDelete: Cascade)
 
   @@index([funnelId])
@@ -325,9 +284,9 @@ model FunnelPage {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   visits       Int      @default(0)
-  content      String?  @db.LongText
+  content      String?
   order        Int
-  previewImage String?  @db.Text
+  previewImage String?
   funnelId     String
   Funnel       Funnel   @relation(fields: [funnelId], references: [id], onDelete: Cascade)
 
@@ -338,7 +297,7 @@ model AgencySidebarOption {
   id        String   @id @default(uuid())
   name      String   @default("Menu")
   link      String   @default("#")
-  icon      Icon     @default(info)
+  icon      String   @default("info")
   agencyId  String
   Agency    Agency?  @relation(fields: [agencyId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
@@ -351,7 +310,7 @@ model SubAccountSidebarOption {
   id           String      @id @default(uuid())
   name         String      @default("Menu")
   link         String      @default("#")
-  icon         Icon        @default(info)
+  icon         String      @default("info")
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   SubAccount   SubAccount? @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
@@ -360,19 +319,15 @@ model SubAccountSidebarOption {
   @@index([subAccountId])
 }
 
-enum InvitationStatus {
-  ACCEPTED
-  REVOKED
-  PENDING
-}
+// InvitationStatus values: ACCEPTED, REVOKED, PENDING
 
 model Invitation {
-  id       String           @id @default(uuid())
-  email    String           @unique
+  id       String   @id @default(uuid())
+  email    String   @unique
   agencyId String
-  Agency   Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
-  status   InvitationStatus @default(PENDING)
-  role     Role             @default(SUBACCOUNT_USER)
+  Agency   Agency   @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  status   String   @default("PENDING")
+  role     String   @default("SUBACCOUNT_USER")
 
   @@index([agencyId])
 }
@@ -396,16 +351,13 @@ model Notification {
   @@index([userId])
 }
 
-enum Plan {
-  price_1OjA6oL5h9gY5Th8osAxKHg6
-  price_1OjAASL5h9gY5Th8GeVc9aty
-}
+// Plan values: price_1OjA6oL5h9gY5Th8osAxKHg6, price_1OjAASL5h9gY5Th8GeVc9aty
 
 model Subscription {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  plan      Plan?
+  plan      String?
   price     String?
   active    Boolean  @default(false)
 
