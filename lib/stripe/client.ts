@@ -1,7 +1,5 @@
-import {
-  loadStripe,
-  type Stripe,
-} from '@stripe/stripe-js';
+// @ts-ignore - @stripe/stripe-js has type export issues with package.json "exports"
+import { loadStripe, type Stripe } from '@stripe/stripe-js';
 
 let stripePromise: Promise<Stripe | null>;
 // load stripe with connected acct id if one exists
