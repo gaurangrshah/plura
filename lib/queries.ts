@@ -280,6 +280,7 @@ export const getNotificationAndUser = async (agencyId: string) => {
       orderBy: {
         createdAt: 'desc',
       },
+      take: 50, // Limit to prevent long-running queries
     });
     return response;
   } catch (error) {
@@ -533,11 +534,13 @@ export const getLanesWithTicketAndTags = async (pipelineId: string) => {
       pipelineId,
     },
     orderBy: { order: 'asc' },
+    take: 20, // Limit lanes per pipeline
     include: {
       Tickets: {
         orderBy: {
           order: 'asc',
         },
+        take: 100, // Limit tickets per lane
         include: {
           Tags: true,
           Assigned: true,
@@ -664,6 +667,7 @@ export const getTicketsWithTags = async (pipelineId: string) => {
       },
     },
     include: { Tags: true, Assigned: true, Customer: true },
+    take: 200, // Limit tickets per pipeline
   });
   return response;
 };
@@ -687,6 +691,7 @@ export const _getTicketsWithAllRelations = async (laneId: string) => {
       Lane: true,
       Tags: true,
     },
+    take: 100, // Limit tickets per lane
   });
   return response;
 };
@@ -709,6 +714,7 @@ export const getSubAccountTeamMembers = async (subaccountId: string) => {
         },
       },
     },
+    take: 50, // Limit team members
   });
   return subaccountUsersWithAccess;
 };
@@ -720,6 +726,7 @@ export const searchContacts = async (searchTerms: string) => {
         contains: searchTerms,
       },
     },
+    take: 50, // Limit search results
   });
   return response;
 };
@@ -796,6 +803,7 @@ export const getFunnels = async (subacountId: string) => {
   const funnels = await db.funnel.findMany({
     where: { subAccountId: subacountId },
     include: { FunnelPages: true },
+    take: 50, // Limit funnels per subaccount
   });
 
   return funnels;
@@ -889,9 +897,15 @@ export const getPipelines = async (subaccountId: string) => {
     where: { subAccountId: subaccountId },
     include: {
       Lane: {
-        include: { Tickets: true },
+        take: 20, // Limit lanes per pipeline
+        include: {
+          Tickets: {
+            take: 50, // Limit tickets per lane
+          },
+        },
       },
     },
+    take: 20, // Limit pipelines per subaccount
   });
   return response;
 };
