@@ -133,10 +133,10 @@ export function UserDetails({
 
   useEffect(() => {
     if (data.user) {
-      form.reset(data.user)
+      form.reset(data.user as any)
     }
     if (userData) {
-      form.reset(userData)
+      form.reset(userData as any)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData, data])

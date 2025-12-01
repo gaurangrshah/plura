@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useScroll, useTransform, motion } from "framer-motion";
+import { useScroll, useTransform, motion, MotionValue } from "framer-motion";
 import Image from "next/image";
 import { TypewriterEffect } from "./typewriter-effect";
 
@@ -88,8 +88,8 @@ export const HeroContainerScroll: React.FC = () => {
 };
 
 interface CardProps {
-  rotate: ReturnType<typeof useTransform>;
-  scale: ReturnType<typeof useTransform>;
+  rotate: MotionValue<number>;
+  scale: MotionValue<number>;
 }
 
 const Card: React.FC<CardProps> = ({ rotate, scale }) => {

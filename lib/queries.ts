@@ -8,14 +8,14 @@ import { clerkClient, currentUser } from '@clerk/nextjs';
 import {
   Agency,
   Lane,
-  Plan,
   Prisma,
-  Role,
   SubAccount,
   Tag,
   Ticket,
   User,
 } from '@prisma/client';
+
+import type { Plan, Role } from './types';
 
 import { v4 } from 'uuid';
 import { z } from 'zod';

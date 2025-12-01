@@ -10,11 +10,11 @@ import {
 import {
   Agency,
   Contact,
-  Plan,
   User,
 } from '@prisma/client';
 
-import {
+import type {
+  Plan,
   PricesList,
   TicketDetails,
 } from '@/lib/types';
