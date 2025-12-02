@@ -234,6 +234,39 @@ If costs remain high or Clerk pricing becomes prohibitive, migrate to [NextAuth.
 2. **Monitor:** Track edge function usage for 1-2 weeks
 3. **Decide:** If costs still high, proceed with Phase 2 (NextAuth migration)
 
+## Technical Debt
+
+### Typography Inconsistencies
+
+**Status:** Noted
+**Priority:** Low
+**Effort:** 1-2 hours
+
+Page headings use inconsistent styles across the dashboard:
+
+| Page | Current Style |
+|------|---------------|
+| Dashboard | `text-4xl` |
+| Contacts | `text-4xl p-4` |
+| Billing | `text-4xl p-4` |
+| Workflows | `text-4xl font-bold` |
+| Funnel | `text-3xl mb-8` |
+| Pipeline | `text-2xl` |
+
+**Fix:** Create a shared `<PageHeader>` component and refactor all pages to use it.
+
+```tsx
+// components/global/page-header.tsx
+export function PageHeader({ title, description }: Props) {
+  return (
+    <div className="mb-6">
+      <h1 className="text-4xl font-bold tracking-tight">{title}</h1>
+      {description && <p className="text-muted-foreground mt-2">{description}</p>}
+    </div>
+  )
+}
+```
+
 ## License
 
 MIT
