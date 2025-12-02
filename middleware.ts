@@ -46,7 +46,20 @@ export default authMiddleware({
 });
 
 export const config = {
-  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+  // Optimized matcher - only run middleware on routes that need auth or routing
+  // This reduces Vercel Edge Function invocations significantly
+  matcher: [
+    // Protected app routes
+    '/agency/:path*',
+    '/subaccount/:path*',
+    // Auth redirects
+    '/sign-in',
+    '/sign-up',
+    // Root (for subdomain detection)
+    '/',
+    // API routes (except webhooks and uploadthing which are public)
+    '/api/((?!webhook|uploadthing).*)',
+  ],
 };
 
 /**
