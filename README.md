@@ -58,16 +58,16 @@ NEXT_PUBLIC_SCHEME=http://
 
 ```bash
 # Install dependencies
-npm install
+pnpm install
 
 # Generate Prisma client
-npx prisma generate
+pnpm exec prisma generate
 
 # Push schema to local database
-npx prisma db push
+pnpm exec prisma db push
 
 # Start development server
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000)
