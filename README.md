@@ -133,6 +133,107 @@ The build command in `vercel.json`:
 }
 ```
 
+## Authentication Strategy
+
+### Current State: Clerk
+
+The app currently uses [Clerk](https://clerk.com/) for authentication. Clerk middleware runs on Vercel Edge Functions for every request, which can cause cost spikes at scale.
+
+**Known Issue:** Edge function invocations spike due to middleware running on all routes.
+
+### Migration Plan
+
+#### Phase 1: Optimize Clerk Middleware (Quick Win)
+
+Narrow the middleware matcher to only protected routes:
+
+```typescript
+// middleware.ts - BEFORE
+export const config = {
+  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+}
+
+// middleware.ts - AFTER
+export const config = {
+  matcher: [
+    '/agency/:path*',
+    '/subaccount/:path*',
+    '/api/((?!webhook|uploadthing).*)',
+  ],
+}
+```
+
+**Expected result:** 50-80% reduction in edge function invocations by excluding public pages (landing, pricing, docs).
+
+#### Phase 2: Migrate to NextAuth.js (If Needed)
+
+If costs remain high or Clerk pricing becomes prohibitive, migrate to [NextAuth.js](https://next-auth.js.org/):
+
+| Aspect | Clerk | NextAuth.js |
+|--------|-------|-------------|
+| Runtime | Edge Functions | Node.js (no edge costs) |
+| Cost | Per MAU pricing | Free, open source |
+| Database | Clerk-managed | Your database (Turso) |
+| Setup | Minimal | More configuration |
+| UI | Pre-built components | Build your own or use templates |
+
+**Migration steps:**
+
+1. **Schema changes** - Add to User model:
+   ```prisma
+   model User {
+     // existing fields...
+     password      String?
+     emailVerified DateTime?
+     accounts      Account[]
+     sessions      Session[]
+   }
+
+   model Account { /* NextAuth schema */ }
+   model Session { /* NextAuth schema */ }
+   model VerificationToken { /* NextAuth schema */ }
+   ```
+
+2. **Install NextAuth:**
+   ```bash
+   npm install next-auth @auth/prisma-adapter
+   ```
+
+3. **Create auth config** at `lib/auth.ts`
+
+4. **Create API route** at `app/api/auth/[...nextauth]/route.ts`
+
+5. **Replace Clerk hooks:**
+   - `useAuth()` → `useSession()`
+   - `useUser()` → `useSession().data.user`
+   - `<SignIn />` → Custom form or NextAuth pages
+   - `<UserButton />` → Custom component
+
+6. **Remove middleware** - Check auth in server components instead:
+   ```typescript
+   // In server components
+   import { getServerSession } from "next-auth"
+   const session = await getServerSession(authOptions)
+   if (!session) redirect("/sign-in")
+   ```
+
+7. **Update multi-tenancy logic** - Agency/SubAccount access stays the same, just swap the user ID source.
+
+#### Alternative Options Considered
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **Lucia Auth** | Lightweight, full control | More DIY, smaller community |
+| **Supabase Auth** | RLS built-in, generous free tier | Requires database migration |
+| **Better Auth** | Modern DX | Newer, less battle-tested |
+| **Kinde** | Multi-tenancy built-in | Still external service costs |
+
+### Recommendation
+
+1. **Immediate:** Implement Phase 1 (optimize middleware matcher)
+2. **Monitor:** Track edge function usage for 1-2 weeks
+3. **Decide:** If costs still high, proceed with Phase 2 (NextAuth migration)
+
 ## License
 
 MIT
