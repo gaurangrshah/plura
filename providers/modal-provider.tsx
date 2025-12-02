@@ -65,7 +65,7 @@ export function ModalProvider({ children }: ModalProviderProps) {
   ) => {
     if (modal) {
       if (fetchData) {
-        setData({ ...data, ...(await fetchData()) } || {});
+        setData({ ...data, ...(await fetchData()) });
       }
       setShowingModal(modal);
       setIsOpen(true);

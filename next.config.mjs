@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ['@libsql/client', 'libsql'],
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Externalize libsql packages to prevent webpack bundling issues
+      config.externals = [...(config.externals || []), '@libsql/client', 'libsql'];
+    }
+    return config;
+  },
   images: {
     // domains: [
     //   'uploadthing.com',
