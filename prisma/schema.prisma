@@ -94,6 +94,8 @@ model SubAccount {
   Pipeline         Pipeline[]
   Tags             Tag[]
   Notification     Notification[]
+  Workflow         Workflow[]
+  Integration      SubAccountIntegration[]
 
   @@index([agencyId])
 }
@@ -383,4 +385,93 @@ model AddOns {
   Agency    Agency?  @relation(fields: [agencyId], references: [id])
 
   @@index([agencyId])
+}
+
+// =============================================================================
+// WORKFLOW SYSTEM (Graph-based automation following Fuzzie patterns)
+// =============================================================================
+
+// WorkflowNodeType values: Trigger, Action, Condition, Wait, Email, Notification
+// TriggerSubtype values: CONTACT_FORM, PIPELINE_STAGE_CHANGE, TICKET_CREATED, MANUAL
+// ActionSubtype values: CREATE_CONTACT, UPDATE_CONTACT, MOVE_PIPELINE_STAGE, SEND_EMAIL, SEND_NOTIFICATION, WEBHOOK
+
+model Workflow {
+  id          String   @id @default(uuid())
+  name        String
+  description String   @default("")
+
+  // Graph data stored as JSON (ReactFlow format)
+  nodes       String   @default("[]")  // JSON: EditorNode[]
+  edges       String   @default("[]")  // JSON: Edge[]
+
+  // Execution configuration
+  published   Boolean  @default(false)
+  flowPath    String?  // Computed execution order
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Scoped to SubAccount (multi-tenant)
+  subAccountId String
+  SubAccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+
+  // Execution history
+  instances    WorkflowInstance[]
+
+  @@index([subAccountId])
+  @@index([published])
+}
+
+// WorkflowInstanceStatus values: pending, running, completed, failed, cancelled
+
+model WorkflowInstance {
+  id          String    @id @default(uuid())
+  workflowId  String
+  Workflow    Workflow  @relation(fields: [workflowId], references: [id], onDelete: Cascade)
+
+  status      String    @default("pending")
+
+  // Trigger context (what initiated this run)
+  triggerType String?
+  triggerData String    @default("{}")  // JSON: trigger payload
+
+  // Execution tracking
+  currentNode String?   // ID of currently executing node
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  // Execution logs
+  logs        String    @default("[]")  // JSON: ExecutionLog[]
+  error       String?   // Error message if failed
+
+  @@index([workflowId])
+  @@index([status])
+}
+
+// IntegrationType values: slack, discord, notion, google, webhook
+
+model SubAccountIntegration {
+  id           String     @id @default(uuid())
+  type         String     // slack, discord, notion, google, webhook
+  name         String     @default("")  // User-friendly name
+
+  // Credentials (encrypted in production)
+  accessToken  String?
+  refreshToken String?
+
+  // Integration-specific metadata
+  metadata     String     @default("{}")  // JSON: channel IDs, workspace info, etc.
+
+  // Status
+  connected    Boolean    @default(false)
+  lastUsed     DateTime?
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  subAccountId String
+  SubAccount   SubAccount @relation(fields: [subAccountId], references: [id], onDelete: Cascade)
+
+  @@unique([subAccountId, type])
+  @@index([subAccountId])
 }

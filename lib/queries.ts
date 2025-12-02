@@ -348,6 +348,11 @@ export const upsertSubAccount = async (subAccount: SubAccount) => {
             link: `/subaccount/${subAccount.id}/automations`,
           },
           {
+            name: 'Workflows',
+            icon: 'chip',
+            link: `/subaccount/${subAccount.id}/workflows`,
+          },
+          {
             name: 'Pipelines',
             icon: 'flag',
             link: `/subaccount/${subAccount.id}/pipelines`,
@@ -367,6 +372,31 @@ export const upsertSubAccount = async (subAccount: SubAccount) => {
     },
   });
   return response;
+};
+
+/**
+ * Add Workflows sidebar option to an existing subaccount
+ * (for migrating existing subaccounts)
+ */
+export const addWorkflowsSidebarOption = async (subAccountId: string) => {
+  // Check if the option already exists
+  const existing = await db.subAccountSidebarOption.findFirst({
+    where: {
+      subAccountId,
+      name: 'Workflows',
+    },
+  });
+
+  if (existing) return existing;
+
+  return db.subAccountSidebarOption.create({
+    data: {
+      name: 'Workflows',
+      icon: 'chip',
+      link: `/subaccount/${subAccountId}/workflows`,
+      subAccountId,
+    },
+  });
 };
 
 /**
