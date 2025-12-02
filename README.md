@@ -54,20 +54,7 @@ NEXT_PUBLIC_DOMAIN=localhost:3000
 NEXT_PUBLIC_SCHEME=http://
 ```
 
-### Quick Start
-
-```bash
-# One command to open editor + start dev server
-./dev.sh
-
-# Or with a specific editor
-EDITOR_CMD=zed ./dev.sh
-
-# Or without opening an editor
-EDITOR_CMD=none ./dev.sh
-```
-
-### Manual Installation
+### Installation
 
 ```bash
 # Install dependencies
