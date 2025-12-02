@@ -119,7 +119,7 @@ export function SettingsTab(props: Props) {
               <div className="flex flex-col gap-2">
                 <p className="text-muted-foreground">YouTube Source</p>
                 <Input
-                  id="href"
+                  id="src"
                   placeholder="https://youtube.com/embed/{videoId}"
                   onChange={handleChangeCustomValues}
                   value={state.editor.selectedElement.content.src}
