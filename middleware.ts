@@ -1,64 +1,74 @@
 import { NextResponse } from 'next/server';
 
-import { authMiddleware } from '@clerk/nextjs';
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-// See https://clerk.com/docs/references/nextjs/auth-middleware -> configuring your Middleware
-export default authMiddleware({
-  publicRoutes: ['/site', '/api/uploadthing'],
-  async beforeAuth(auth, req) {},
-  async afterAuth(auth, req) {
-    // rewrite for domains
-    const url = req.nextUrl;
-    const searchParams = url.searchParams.toString();
-    let hostname = req.headers;
+// Routes that require authentication
+const isProtectedRoute = createRouteMatcher([
+  '/agency(.*)',
+  '/subaccount(.*)',
+]);
 
-    const pathWithSearchParams = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
+// Routes that are always public (no auth check needed)
+const isPublicRoute = createRouteMatcher([
+  '/site(.*)',
+  '/api/uploadthing(.*)',
+  '/api/webhook(.*)',
+]);
 
-    const customSubdomain = hostname
-      .get('host')
-      ?.split(`${process.env.NEXT_PUBLIC_DOMAIN}`)
-      .filter(Boolean)[0];
+export default clerkMiddleware(async (auth, req) => {
+  const url = req.nextUrl;
+  const searchParams = url.searchParams.toString();
+  const hostname = req.headers;
 
-    if (customSubdomain) {
-      return NextResponse.rewrite(
-        new URL(`/${customSubdomain}${pathWithSearchParams}`, req.url)
-      );
-    }
+  const pathWithSearchParams = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
 
-    if (url.pathname === '/sign-in' || url.pathname === '/sign-up') {
-      return NextResponse.redirect(new URL(`/agency/sign-in`, req.url));
-    }
+  // Check for custom subdomain
+  const customSubdomain = hostname
+    .get('host')
+    ?.split(`${process.env.NEXT_PUBLIC_DOMAIN}`)
+    .filter(Boolean)[0];
 
-    if (
-      url.pathname === '/' ||
-      (url.pathname === '/site' && url.host === process.env.NEXT_PUBLIC_DOMAIN)
-    ) {
-      return NextResponse.rewrite(new URL(`/site`, req.url));
-    }
+  if (customSubdomain) {
+    return NextResponse.rewrite(
+      new URL(`/${customSubdomain}${pathWithSearchParams}`, req.url)
+    );
+  }
 
-    if (
-      url.pathname.startsWith('/agency') ||
-      url.pathname.startsWith('/subaccount')
-    ) {
-      return NextResponse.rewrite(new URL(`${pathWithSearchParams}`, req.url));
-    }
-  },
+  // Redirect /sign-in and /sign-up to /agency/sign-in
+  if (url.pathname === '/sign-in' || url.pathname === '/sign-up') {
+    return NextResponse.redirect(new URL('/agency/sign-in', req.url));
+  }
+
+  // Rewrite root to /site
+  if (
+    url.pathname === '/' ||
+    (url.pathname === '/site' && url.host === process.env.NEXT_PUBLIC_DOMAIN)
+  ) {
+    return NextResponse.rewrite(new URL('/site', req.url));
+  }
+
+  // Protect agency and subaccount routes
+  if (isProtectedRoute(req) && !isPublicRoute(req)) {
+    await auth.protect();
+  }
+
+  // Rewrite agency and subaccount routes
+  if (
+    url.pathname.startsWith('/agency') ||
+    url.pathname.startsWith('/subaccount')
+  ) {
+    return NextResponse.rewrite(new URL(pathWithSearchParams, req.url));
+  }
 });
 
 export const config = {
   // Optimized matcher - only run middleware on routes that need auth or routing
   // This reduces Vercel Edge Function invocations significantly
   matcher: [
-    // Protected app routes
-    '/agency/:path*',
-    '/subaccount/:path*',
-    // Auth redirects
-    '/sign-in',
-    '/sign-up',
-    // Root (for subdomain detection)
-    '/',
-    // API routes (except webhooks and uploadthing which are public)
-    '/api/((?!webhook|uploadthing).*)',
+    // Skip Next.js internals and static files
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    // Always run for API routes
+    '/(api|trpc)(.*)',
   ],
 };
 

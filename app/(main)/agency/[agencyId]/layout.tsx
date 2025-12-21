@@ -9,7 +9,7 @@ import {
   getNotificationAndUser,
   verifyAndAcceptInvitation,
 } from '@/lib/queries';
-import { currentUser } from '@clerk/nextjs';
+import { currentUser } from '@clerk/nextjs/server';
 
 export default async function AgencyLayout({
   children,

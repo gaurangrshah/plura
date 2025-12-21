@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { clerkClient, currentUser } from '@clerk/nextjs';
+import { clerkClient, currentUser } from '@clerk/nextjs/server';
 
 import {
   Agency,
@@ -155,7 +155,7 @@ export const verifyAndAcceptInvitation = async () => {
     });
 
     if (userDetails) {
-      await clerkClient.users.updateUserMetadata(user.id, {
+      await (await clerkClient()).users.updateUserMetadata(user.id, {
         privateMetadata: {
           role: userDetails.role || 'SUBACCOUNT_USER',
         },
@@ -263,7 +263,7 @@ export const initUser = async (newUser: Partial<User>) => {
     },
   });
 
-  await clerkClient.users.updateUserMetadata(user.id, {
+  await (await clerkClient()).users.updateUserMetadata(user.id, {
     privateMetadata: {
       role: newUser.role || 'SUBACCOUNT_USER',
     },
@@ -412,7 +412,7 @@ export const updateUser = async (user: Partial<User>) => {
     data: { ...user }, // FIXME: not good practice to pass the whole user object
   });
 
-  await clerkClient.users.updateUserMetadata(response.id, {
+  await (await clerkClient()).users.updateUserMetadata(response.id, {
     privateMetadata: {
       role: user.role || 'SUBACCOUNT_USER',
     },
@@ -462,7 +462,7 @@ export const deleteSubAccount = async (subaccountId: string) => {
 };
 
 export const deleteUser = async (userId: string) => {
-  await clerkClient.users.updateUserMetadata(userId, {
+  await (await clerkClient()).users.updateUserMetadata(userId, {
     privateMetadata: {
       role: undefined,
     },
@@ -494,7 +494,7 @@ export const sendInvitation = async (
   try {
     // @FIXME: this throws an error
     // Invitations are only supported on instances that accept email addresses.
-    const invitation = await clerkClient.invitations.createInvitation({
+    const invitation = await (await clerkClient()).invitations.createInvitation({
       emailAddress: email,
       redirectUrl: process.env.NEXT_PUBLIC_URL,
       publicMetadata: {
