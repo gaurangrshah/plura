@@ -4,6 +4,84 @@
   "tag": "master",
   "prdSource": null,
   "created": "2025-12-01T00:00:00Z",
-  "updated": "2025-12-01T00:00:00Z",
-  "tasks": []
+  "updated": "2025-12-21T23:30:00Z",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Update prod URL in registry",
+      "description": "Update production URL to https://pluranu.vercel.app/",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "subtasks": [],
+      "acceptanceCriteria": ["Registry shows correct prod URL"],
+      "estimatedEffort": "small"
+    },
+    {
+      "id": 2,
+      "title": "Update GitHub URL in registry",
+      "description": "Update GitHub URL to https://github.com/gaurangrshah/plura",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "subtasks": [],
+      "acceptanceCriteria": ["Registry shows correct GitHub URL"],
+      "estimatedEffort": "small"
+    },
+    {
+      "id": 3,
+      "title": "Run code review and fix issues",
+      "description": "Run /code-review skill and fix all identified issues",
+      "status": "done",
+      "priority": "high",
+      "dependencies": [],
+      "subtasks": [],
+      "acceptanceCriteria": ["Code review passes", "All issues resolved"],
+      "estimatedEffort": "medium"
+    },
+    {
+      "id": 4,
+      "title": "Add to umami under trials team",
+      "description": "Register project in Umami analytics under the trials team",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [],
+      "subtasks": [],
+      "acceptanceCriteria": ["Project visible in Umami trials team"],
+      "estimatedEffort": "small"
+    },
+    {
+      "id": 5,
+      "title": "Add umami tracking script to project",
+      "description": "Add Umami analytics tracking script to the project",
+      "status": "done",
+      "priority": "medium",
+      "dependencies": [4],
+      "subtasks": [],
+      "acceptanceCriteria": ["Tracking script in layout", "Analytics collecting data"],
+      "estimatedEffort": "small"
+    },
+    {
+      "id": 6,
+      "title": "Push to Gitea",
+      "description": "Push project to Gitea remote repository",
+      "status": "in_progress",
+      "priority": "medium",
+      "dependencies": [3],
+      "subtasks": [],
+      "acceptanceCriteria": ["Code pushed to Gitea", "Remote up to date"],
+      "estimatedEffort": "small"
+    },
+    {
+      "id": 7,
+      "title": "Mirror to GitHub",
+      "description": "Mirror repository to GitHub at https://github.com/gaurangrshah/plura",
+      "status": "pending",
+      "priority": "medium",
+      "dependencies": [6],
+      "subtasks": [],
+      "acceptanceCriteria": ["GitHub repo exists", "Code mirrored successfully"],
+      "estimatedEffort": "small"
+    }
+  ]
 }

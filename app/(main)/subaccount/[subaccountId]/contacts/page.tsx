@@ -4,7 +4,7 @@ import {
   Ticket,
 } from '@prisma/client';
 
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 import { BlurPage } from '@/components/global/blur-page';
 import {
