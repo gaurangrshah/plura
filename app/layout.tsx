@@ -28,7 +28,7 @@ export default function RootLayout({
       <head>
         <Script
           defer
-          src="https://rarely-teens-obtaining-bloom.trycloudflare.com/script.js"
+          src="https://analytics.h1a1ah.com/script.js"
           data-website-id="031625d9-af73-4842-bc06-3a81e49df948"
           strategy="afterInteractive"
         />
