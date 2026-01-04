@@ -1,3 +1,5 @@
+import { withSentryConfig } from "@sentry/nextjs";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -11,13 +13,6 @@ const nextConfig = {
     return config;
   },
   images: {
-    // domains: [
-    //   'uploadthing.com',
-    //   'utfs.io',
-    //   'img.clerk.com',
-    //   'subdomain',
-    //   'files.stripe.com',
-    // ],
     remotePatterns: [
       {
         protocol: 'https',
@@ -44,4 +39,16 @@ const nextConfig = {
   reactStrictMode: false,
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Suppresses source map uploading logs during build
+  silent: true,
+
+  // Upload source maps to Sentry
+  widenClientFileUpload: true,
+
+  // Disable Sentry telemetry
+  disableLogger: true,
+
+  // Automatically tree-shake Sentry logger statements
+  automaticVercelMonitors: true,
+});
